@@ -238,14 +238,14 @@ lightboxModal.addEventListener('click', function(e) {
 // === Dynamic Demo Examples Thumbnails and Video Player ===
 document.addEventListener('DOMContentLoaded', function() {
     const videoFiles = [
-        'video_demo/example_1-1.mp4',
-        'video_demo/example_2-1.mp4',
-        'video_demo/example_3-1.mp4',
-        'video_demo/example_4-1.mp4',
-        'video_demo/example_5-1.mp4',
-        'video_demo/example_6-1.mp4',
-        'video_demo/example_7-1.mp4',
-        'video_demo/example_8-1.mp4',
+        { video: 'video_demo/example_1-1.mp4', thumb: 'thumbnails/example_1_thumb.jpg' },
+        { video: 'video_demo/example_2-1.mp4', thumb: 'thumbnails/example_2_thumb.jpg' },
+        { video: 'video_demo/example_3-1.mp4', thumb: 'thumbnails/example_4_thumb.jpg' },
+        { video: 'video_demo/example_4-1.mp4', thumb: 'thumbnails/example_4_thumb.jpg' },
+        { video: 'video_demo/example_5-1.mp4', thumb: 'thumbnails/example_5_thumb.jpg' },
+        { video: 'video_demo/example_6-1.mp4', thumb: 'thumbnails/example_6_thumb.jpg' },
+        { video: 'video_demo/example_7-1.mp4', thumb: 'thumbnails/example_7_thumb.jpg' },
+        { video: 'video_demo/example_8-1.mp4', thumb: 'thumbnails/example_8_thumb.jpg' },
     ];
     const thumbnailsContainer = document.getElementById('examples-thumbnails');
     const videoPlayer = document.getElementById('examples-video-player');
@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
     thumbnailsContainer.style.gap = '16px';
     thumbnailsContainer.style.marginBottom = '20px';
 
-    function createThumbnail(videoSrc, idx) {
+    function createThumbnail(videoObj, idx) {
         const thumbDiv = document.createElement('div');
         thumbDiv.className = 'thumbnail';
         thumbDiv.style.cursor = 'pointer';
@@ -268,36 +268,15 @@ document.addEventListener('DOMContentLoaded', function() {
         thumbDiv.style.height = '60px';
         thumbDiv.style.position = 'relative';
         thumbDiv.style.background = '#eee';
-        
-        // Video element for thumbnail extraction
-        const video = document.createElement('video');
-        video.src = videoSrc;
-        video.crossOrigin = 'anonymous';
-        video.muted = true;
-        video.playsInline = true;
-        video.preload = 'metadata';
-        video.style.display = 'none';
-        thumbDiv.appendChild(video);
 
-        // Canvas for thumbnail
-        const canvas = document.createElement('canvas');
-        canvas.width = 160;
-        canvas.height = 90;
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        canvas.style.objectFit = 'cover';
-        canvas.style.display = 'block';
-        thumbDiv.appendChild(canvas);
-
-        video.addEventListener('loadeddata', function() {
-            // Draw the first frame
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        });
-        // Load the first frame
-        video.addEventListener('loadedmetadata', function() {
-            video.currentTime = 0.1;
-        });
+        // Use static image for thumbnail
+        const img = document.createElement('img');
+        img.src = videoObj.thumb;
+        img.alt = 'Video thumbnail';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        thumbDiv.appendChild(img);
 
         // Click event
         thumbDiv.addEventListener('click', function() {
@@ -305,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.thumbnail').forEach(t => t.style.border = '2px solid transparent');
             thumbDiv.style.border = '2px solid #2563eb';
             // Set video
-            videoPlayer.src = videoSrc;
+            videoPlayer.src = videoObj.video;
             videoPlayer.load();
             videoPlayer.play();
         });
@@ -314,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (idx === 0) {
             setTimeout(() => {
                 thumbDiv.style.border = '2px solid #2563eb';
-                videoPlayer.src = videoSrc;
+                videoPlayer.src = videoObj.video;
                 videoPlayer.load();
             }, 100);
         }
@@ -323,14 +302,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Generate thumbnails
-    videoFiles.forEach((src, idx) => createThumbnail(src, idx));
+    videoFiles.forEach((obj, idx) => createThumbnail(obj, idx));
 });
 
 // === Applications Interactive Gallery ===
 const appVideos = [
-    { src: 'application_1_resized.mp4', caption: 'Relighting' },
-    { src: 'application_2.mp4', caption: 'Interactable Scene' },
-    { src: 'application_3_resized.mp4', caption: 'Physically Based Interaction' }
+    { src: 'application_1_resized.mp4', caption: 'Relighting', thumb: 'thumbnails/example_1_thumb.jpg' },
+    { src: 'application_2.mp4', caption: 'Interactable Scene', thumb: 'thumbnails/example_2_thumb.jpg' },
+    { src: 'application_3_resized.mp4', caption: 'Physically Based Interaction', thumb: 'thumbnails/example_4_thumb.jpg' }
 ];
 const appThumbs = document.getElementById('applications-thumbnails');
 const appPlayer = document.getElementById('applications-video-player');
@@ -338,7 +317,7 @@ const appCaption = document.getElementById('applications-caption');
 
 if (appThumbs && appPlayer && appCaption) {
     appVideos.forEach((vid, idx) => {
-        // Create thumbnail from video
+        // Create thumbnail from static image
         const thumbDiv = document.createElement('div');
         thumbDiv.className = 'app-thumbnail';
         thumbDiv.style.cursor = 'pointer';
@@ -350,33 +329,14 @@ if (appThumbs && appPlayer && appCaption) {
         thumbDiv.style.position = 'relative';
         thumbDiv.style.background = '#eee';
 
-        // Video element for thumbnail extraction
-        const video = document.createElement('video');
-        video.src = vid.src;
-        video.crossOrigin = 'anonymous';
-        video.muted = true;
-        video.playsInline = true;
-        video.preload = 'metadata';
-        video.style.display = 'none';
-        thumbDiv.appendChild(video);
-
-        // Canvas for thumbnail
-        const canvas = document.createElement('canvas');
-        canvas.width = 240;
-        canvas.height = 160;
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        canvas.style.objectFit = 'cover';
-        canvas.style.display = 'block';
-        thumbDiv.appendChild(canvas);
-
-        video.addEventListener('loadeddata', function() {
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        });
-        video.addEventListener('loadedmetadata', function() {
-            video.currentTime = 0.1;
-        });
+        // Use static image for thumbnail
+        const img = document.createElement('img');
+        img.src = vid.thumb;
+        img.alt = 'Application video thumbnail';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+        thumbDiv.appendChild(img);
 
         thumbDiv.addEventListener('click', function() {
             document.querySelectorAll('.app-thumbnail').forEach(t => t.style.border = '2px solid transparent');
