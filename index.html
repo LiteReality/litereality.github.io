@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion</title>
+    
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="LiteReality: An automatic pipeline that converts RGB-D scans of indoor environments into graphics-ready scenes with high-quality meshes and PBR materials.">
+    <meta name="keywords" content="3D reconstruction, RGB-D, computer vision, graphics, virtual reality, indoor scanning">
+    <meta property="og:title" content="LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion">
+    <meta property="og:description" content="An automatic pipeline that converts RGB-D scans of indoor environments into graphics-ready scenes.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourusername.github.io/literality">
+    <meta property="og:image" content="logo.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/PointerLockControls.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="#home">LiteReality</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#video">Video</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="#pipeline">Pipeline</a></li>
+                <li><a href="#applications">Applications</a></li>
+                <li><a href="#repainting">Repainting</a></li>
+                <li><a href="#limitations">Limitations</a></li>
+                <li><a href="#citation">Citation</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-title-row">
+                    <img src="logo.png" alt="LiteReality Logo" class="hero-logo">
+                    <span class="hero-title-main">LiteReality</span>
+                </div>
+                <h1 class="hero-title-sub">Graphics-Ready 3D Scene Reconstruction from RGB-D Scans</h1>
+                <div class="hero-links">
+                    <a href="#" class="btn btn-secondary" target="_blank"><i class="fas fa-file-alt"></i> Paper</a>
+                    <a href="#video" class="btn btn-secondary"><i class="fas fa-play"></i> Video</a>
+                    <a href="#" class="btn btn-primary" target="_blank" title="Code coming soon!"><i class="fab fa-github"></i> GitHub (Code coming soon)</a>
+                </div>
+                <div class="authors-row">
+                    <div class="authors">
+                        <a href="https://zheninghuang.github.io/" target="_blank">Zhening Huang</a><sup>1</sup>,
+                        <a href="https://xywu.me/" target="_blank">Xiaoyang Wu</a><sup>2</sup>,
+                        <a href="https://www.cl.cam.ac.uk/~fz261/" target="_blank">Fangcheng Zhong</a><sup>1</sup>,
+                        <a href="https://hszhao.github.io/" target="_blank">Hengshuang Zhao</a><sup>2</sup>,
+                        <a href="https://niessnerlab.org/members/matthias_niessner/profile.html" target="_blank">Matthias Nießner</a><sup>3</sup>,
+                        <a href="https://www.eng.cam.ac.uk/profiles/jl221" target="_blank">Joan Lasenby</a><sup>1</sup>
+                    </div>
+                </div>
+                <div class="institutions">
+                    <sup>1</sup>University of Cambridge, <sup>2</sup>The University of Hong Kong, <sup>3</sup>Technical University of Munich
+                </div>
+
+                <div class="hero-description">
+                    <p>
+
+                        <p>
+                            We are excited to present <b>LiteReality</b> ✨, an automatic pipeline that converts RGB-D scans of indoor environments into <b>graphics-ready</b> 🏠 scenes. In these scenes, all objects are represented as high-quality meshes with PBR materials 🎨 that match their real-world appearance. The scenes also include articulated objects 🔧 and are ready to integrate into graphics pipelines for rendering 💡 and physics-based interactions 🕹️.
+                        </p>
+                    </p>
+                </div>
+
+                <div class="hero-video">
+                    <div class="video-wrapper">
+                        <video controls autoplay muted loop>
+                            <source src="demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2>Gallery</h2>
+            
+            <div class="hero-description">
+                <p>
+                    With high-quality meshes and PBR materials 🎨, the reconstructed scenes integrate seamlessly into rendering pipelines 🖥️. Below are examples of rendered scenes, derived from either real-life scans (📷 left) or public datasets (📚 right).
+                </p>
+            </div>
+
+
+
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="Slide1.png" alt="LiteReality Slide 1" class="gallery-img" data-full="Slide1.png">
+                </div>
+                <div class="gallery-item">
+                    <img src="Slide2.png" alt="LiteReality Slide 2" class="gallery-img" data-full="Slide2.png">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section id="video" class="video-section">
+        <div class="container">
+            <h2> Video</h2>
+           
+            <div class="hero-description">
+                <p>
+                    Watch our explanation videos now!
+                </p>
+            </div>
+
+            <!-- Replace local video with YouTube embed -->
+            <div class="video-wrapper" style="max-width:900px; margin:0 auto;">
+                <iframe width="100%" height="500" src="https://www.youtube.com/embed/QfOBf4ub99w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section id="abstract" class="abstract">
+        <div class="container">
+            <h2>Abstract</h2>
+            <div class="abstract-text">
+                We propose LiteReality, a novel pipeline that converts RGB-D scans of indoor environments into compact, realistic, and interactive 3D virtual replicas. LiteReality not only reconstructs scenes that visually resemble reality but also supports key features essential for graphics pipelines—such as object individuality, articulation, high-quality physically based rendering materials, and physically based interaction. At its core, LiteReality first performs scene understanding and parses the results into a coherent 3D layout and objects, with the help of a structured scene graph. It then reconstructs the scene by retrieving the most visually similar 3D artist-crafted models from a curated asset database. Later, the Material Painting module enhances the realism of retrieved objects by recovering high-quality, spatially varying materials. Finally, the reconstructed scene is integrated into a simulation engine with basic physical properties applied to enable interactive behavior. The resulting scenes are compact, editable, and fully compatible with standard graphics pipelines, making them suitable for applications in AR/VR, gaming, robotics, and digital twins. In addition, LiteReality introduces a training-free object retrieval module that achieves state-of-the-art similarity performance, as benchmarked on the Scan2CAD dataset, along with a robust Material Painting module capable of transferring appearances from images of any style to 3D assets—even in the presence of severe misalignment, occlusion, and poor lighting. We demonstrate the effectiveness of LiteReality on both real-life scans and public datasets.
+            </div>
+        </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section id="examples" class="examples">
+        <div class="container">
+            <h2>Side-by-Side Comparison</h2>
+
+    <div class="hero-description">
+        <p>
+            On the left, you'll see the rendered reconstruction; on the right, the original captured input. 
+            Click through the video carousel above to view different examples.
+        </p>
+</div>
+
+            <div class="examples-content">
+                <div id="examples-thumbnails" class="examples-thumbnails" style="display: flex; gap: 10px; margin-bottom: 20px;"></div>
+                <div class="examples-video-container">
+                    <video id="examples-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000;">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pipeline Section -->
+    <section id="pipeline" class="pipeline">
+        <div class="container">
+            <h2>Pipeline of LiteReality</h2>
+            <div class="pipeline-embed">
+                <img src="pipeline_main.png " alt="LiteReality Pipeline" class="pipeline-img">
+            </div>
+            <p class="pipeline-caption">
+                With input RGB-D scans, the process begins with scene perception and parsing, where room layouts and 3D object bounding box are detected and parsed into a structured and physically plausible arrangement with the help of a scene graph. In the object reconstruction stage, identical clustering first finds identical objects, and a hierarchical retrieval approach is conducted to match 3D models retrieved from the LiteReality database. The material painting stage retrieves and optimizes PBR materials by referencing observed images. Finally, procedural reconstruction assembles all the information into a graphics-ready environment that features realism and interactivity.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Object Repainting Section -->
+    <section id="repainting" class="repainting">
+        <div class="container">
+            <h2>Material Painting</h2>
+            <div class="hero-description">
+                <p>
+                    One of the key challenges in the pipeline, which prior work tends to struggle with, is reliably recovering PBR materials at scale.
+                    While single-image-based methods perform well on images with clear views, they often fail when applied to room-level scans—especially under conditions of occlusion, poor lighting, and geometric misalignment between retrieved objects and input images. To address these limitations, we introduce an MLLM-based retrieval and optimization framework that enables robust and scalable material recovery.
+                    <br><br>
+                    The examples below demonstrate the effectiveness of our method. On the left, a 3D model is painted using multiple reference images; on the right, a single reference image is used to paint three different models.
+                </p>
+            </div>
+
+            <div class="repainting-grid">
+                <div class="repainting-item">
+                    <a href="#" class="lightbox-trigger" data-full="MPSlide1.png">
+                        <img src="MPSlide1.png" alt="Object Repainting 1" class="repainting-img">
+                    </a>
+                </div>
+                <div class="repainting-item">
+                    <a href="#" class="lightbox-trigger" data-full="MPSlide2.png">
+                        <img src="MPSlide2.png" alt="Object Repainting 2" class="repainting-img">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Applications Section -->
+        <section id="applications" class="applications">
+            <div class="container">
+                <h2>Applications</h2>
+                <div class="hero-description">
+                    <p>
+                        Creating interactive, graphics-ready scenes unlocks a wide range of application scenarios. 
+                        Here, we showcase a few examples, including flexible relighting, physics-based interactions, and object-level manipulation. These capabilities open the door to even more applications, such as VR/AR experiences, robotics simulation, interior design, and digital twin systems.
+                    </p>
+                </div>
+                <div id="applications-thumbnails" class="applications-thumbnails" style="display: flex; justify-content: center; gap: 18px; margin-bottom: 20px;"></div>
+                <div class="applications-video-container">
+                    <video id="applications-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div id="applications-caption" class="application-caption" style="margin-top: 10px; text-align: center; color: #2563eb; font-weight: 500;"></div>
+                </div>
+            </div>
+        </section>
+
+        
+    <!-- Limitations Section -->
+    <section id="limitations" class="limitations">
+        <div class="container">
+
+            <div class="hero-description">
+                <h2>Limitations and Future Improvements</h2>
+                <p>
+                    At present, LiteReality performs well for typical indoor environments without extreme design variations. However, several limitations remain that we aim to address in future work:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Generalization to complex object relationships:</strong>
+                        Object relationships are currently determined by bounding boxes from the detection stage, and scene parsing is performed agnostically to ensure physically plausible arrangements. This limits the system's ability to reconstruct more complex relationships, such as a sink embedded in a cabinet, which is common in kitchen environments.
+                    </li>
+                    <li>
+                        <strong>Lack of lighting estimation:</strong>
+                        The material painting stage does not require lighting estimation, which simplifies the process but also reduces the photorealism of the rendered scenes compared to the original inputs.
+                    </li>
+                    <li>
+                        <strong>Exclusion of small objects:</strong>
+                        The system currently focuses on reconstructing room-defining elements, akin to Apple's RoomPlan app; smaller objects are not yet included in the reconstruction pipeline.
+                    </li>
+                </ul>
+            </div>
+            
+    </section>
+
+    <!-- Learn More Section -->
+    <section id="learn-more" class="learn-more">
+        <div class="container">
+            <h2>Want to Dive Deeper?</h2>
+            <div class="learn-more-text">
+                For more details on methodologies, evaluation metrics, comparison with baselines, and the LiteReality database, please refer to our paper.<br><br>
+                <a href="#" class="btn btn-primary learn-more-btn" target="_blank" style="font-size:1.2rem; padding: 0.8em 2em; margin-top: 1em;">Read the Paper</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation Section -->
+    <section id="citation" class="citation">
+        <div class="container">
+            <h2>Citation</h2>
+            <p class="section-desc">Section description goes here.</p>
+            <div class="citation-box">
+                <pre><code>@article{huang2024literality,
+  title={LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion},
+  author={Huang, Zhening and Wu, Xiaoyang and Zhong, Fangcheng and Zhao, Hengshuang and Nießner, Matthias and Lasenby, Joan},
+  journal={arXiv preprint},
+  year={2024}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 LiteReality Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal for Gallery -->
+    <div id="lightbox-modal" class="lightbox-modal">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="High Resolution Gallery Image">
+    </div>
+
+    <script src="script.js"></script>
+    <script src="threejs-viewer.js"></script>
+</body>
+</html> 
