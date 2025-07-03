@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion</title>
+    <title>LiteReality: Graphics-Ready 3D Scene Reconstruction from RGB-D Scans</title>
     
     <!-- Meta tags for SEO and social sharing -->
     <meta name="description" content="LiteReality: An automatic pipeline that converts RGB-D scans of indoor environments into graphics-ready scenes with high-quality meshes and PBR materials.">
     <meta name="keywords" content="3D reconstruction, RGB-D, computer vision, graphics, virtual reality, indoor scanning">
-    <meta property="og:title" content="LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion">
+    <meta property="og:title" content="LiteReality: Graphics-Ready 3D Scene Reconstruction from RGB-D Scans">
     <meta property="og:description" content="An automatic pipeline that converts RGB-D scans of indoor environments into graphics-ready scenes.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://yourusername.github.io/literality">
@@ -56,7 +56,7 @@
                 <div class="hero-links">
                     <a href="#" class="btn btn-secondary" target="_blank"><i class="fas fa-file-alt"></i> Paper</a>
                     <a href="#video" class="btn btn-secondary"><i class="fas fa-play"></i> Video</a>
-                    <a href="#" class="btn btn-primary" target="_blank" title="Code coming soon!"><i class="fab fa-github"></i> GitHub (Code coming soon)</a>
+                    <a href="https://github.com/LiteReality/LiteReality" class="btn btn-secondary" target="_blank" title="github"><i class="fab fa-github"></i> GitHub</a>
                 </div>
                 <div class="authors-row">
                     <div class="authors">
@@ -105,7 +105,7 @@
             
             <div class="hero-description">
                 <p>
-                    With high-quality meshes and PBR materials 🎨, the reconstructed scenes integrate seamlessly into rendering pipelines 🖥️. Below are examples of rendered scenes, derived from either real-life scans (📷 left) or public datasets (📚 right).
+                    With high-quality meshes and PBR materials 🎨, the reconstructed scenes integrate seamlessly into rendering pipelines 🖥️. Below are examples of rendered scenes, reconstructed from either real-life scans (📷 left) or public datasets (📚 right).
                 </p>
             </div>
 
@@ -129,13 +129,13 @@
            
             <div class="hero-description">
                 <p>
-                    Watch our explanation videos now!
+                    🎬 Watch our explainer video now and understand everything in just 4 minutes! ⏱️💡✨
                 </p>
             </div>
 
             <!-- Replace local video with YouTube embed -->
             <div class="video-wrapper" style="max-width:900px; margin:0 auto;">
-                <iframe width="100%" height="500" src="https://www.youtube.com/embed/QfOBf4ub99w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="100%" height="500" src="https://www.youtube.com/embed/ecK9m3LXg2c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
             </div>
         </div>
     </section>
@@ -154,22 +154,20 @@
     <section id="examples" class="examples">
         <div class="container">
             <h2>Side-by-Side Comparison</h2>
-
-    <div class="hero-description">
-        <p>
-            On the left, you'll see the rendered reconstruction; on the right, the original captured input. 
-            Click through the video carousel above to view different examples.
-        </p>
-</div>
-
-            <div class="examples-content">
-                <div id="examples-thumbnails" class="examples-thumbnails" style="display: flex; gap: 10px; margin-bottom: 20px;"></div>
-                <div class="examples-video-container">
-                    <video id="examples-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000;">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
+            <div class="hero-description" style="text-align: center;">
+                <p>
+                  🏠 <strong>Left:</strong> Rendered 3D scene reconstruction<br/>
+                  📸 <strong>Right:</strong> Original RGB capture<br/>
+                  Swipe through the carousel above to see more examples. 🔄
+                </p>
+              </div>
+            <div id="examples-thumbnails" class="applications-thumbnails" style="display: flex; justify-content: center; gap: 18px; margin-bottom: 20px;"></div>
+            <div class="applications-video-container">
+                <video id="examples-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div id="examples-caption" class="application-caption" style="margin-top: 10px; text-align: center; color: #2563eb; font-weight: 500;"></div>
             </div>
         </div>
     </section>
@@ -194,13 +192,21 @@
             <h2>Material Painting</h2>
             <div class="hero-description">
                 <p>
-                    One of the key challenges in the pipeline, which prior work tends to struggle with, is reliably recovering PBR materials at scale.
-                    While single-image-based methods perform well on images with clear views, they often fail when applied to room-level scans—especially under conditions of occlusion, poor lighting, and geometric misalignment between retrieved objects and input images. To address these limitations, we introduce an MLLM-based retrieval and optimization framework that enables robust and scalable material recovery.
-                    <br><br>
-                    The examples below demonstrate the effectiveness of our method. On the left, a 3D model is painted using multiple reference images; on the right, a single reference image is used to paint three different models.
+                  One of the <strong>key challenges</strong> in the pipeline—which prior work often struggles with—is 
+                  <b>reliably recovering PBR materials at scale</b>. While single-image methods perform well on clear views, 
+                  they frequently <strong>fail</strong> on room-level scans under conditions of occlusion, poor lighting, 
+                  and geometric misalignment between retrieved objects and input images. To address these limitations, we introduce an <strong>MLLM-based retrieval &amp; optimization framework</strong> 
+                  for robust, scalable material recovery.
                 </p>
-            </div>
+                <p>👇 <strong>Examples:</strong></p>
+                <ul>
+                  <li>🖌️📸 <strong>Left:</strong> Model painted using <em>multiple reference images</em></li>
+                  <li>🎨✨ <strong>Right:</strong> Single reference image used to paint <em>three different models</em></li>
+                <br>
+              </div>
 
+
+            
             <div class="repainting-grid">
                 <div class="repainting-item">
                     <a href="#" class="lightbox-trigger" data-full="MPSlide1.png">
@@ -241,28 +247,24 @@
     <!-- Limitations Section -->
     <section id="limitations" class="limitations">
         <div class="container">
-
-            <div class="hero-description">
-                <h2>Limitations and Future Improvements</h2>
+            <h2 style="text-align: center;">Limitations and Future Improvements</h2>
+            <div class="limitations-content">
                 <p>
-                    At present, LiteReality performs well for typical indoor environments without extreme design variations. However, several limitations remain that we aim to address in future work:
+                  At present, LiteReality aims for typical indoor environments without extreme design variations. To generalize to more diverse scenes, several key limitations need to be addressed:
                 </p>
                 <ul>
-                    <li>
-                        <strong>Generalization to complex object relationships:</strong>
-                        Object relationships are currently determined by bounding boxes from the detection stage, and scene parsing is performed agnostically to ensure physically plausible arrangements. This limits the system's ability to reconstruct more complex relationships, such as a sink embedded in a cabinet, which is common in kitchen environments.
-                    </li>
-                    <li>
-                        <strong>Lack of lighting estimation:</strong>
-                        The material painting stage does not require lighting estimation, which simplifies the process but also reduces the photorealism of the rendered scenes compared to the original inputs.
-                    </li>
-                    <li>
-                        <strong>Exclusion of small objects:</strong>
-                        The system currently focuses on reconstructing room-defining elements, akin to Apple's RoomPlan app; smaller objects are not yet included in the reconstruction pipeline.
-                    </li>
+                  <li>🔄 <strong>Generalization to complex object relationships:</strong><br>
+                      Object relationships are currently inferred from bounding boxes in the detection stage, and scene parsing is performed agnostically to ensure physically plausible layouts. This prevents the system from handling more intricate configurations—e.g., a sink embedded in a cabinet, which is common in kitchen environments.
+                  </li>
+                  <li>💡 <strong>Lack of lighting estimation:</strong><br>
+                      Our material-painting stage skips any explicit lighting estimation. While this simplifies the pipeline, it also reduces the photorealism of the rendered scenes compared to the original captures.
+                  </li>
+                  <li>🐁 <strong>Exclusion of small objects:</strong><br>
+                      LiteReality currently focuses on reconstructing room-defining elements (similar to Apple’s RoomPlan); smaller objects are not yet included in the pipeline.
+                  </li>
                 </ul>
             </div>
-            
+        </div>
     </section>
 
     <!-- Learn More Section -->
@@ -282,10 +284,10 @@
             <h2>Citation</h2>
             <div class="citation-box">
                 <pre><code>@article{huang2024literality,
-  title={LiteReality: Automatic RGB-D to Graphics-Ready Scene Conversion},
+  title={LiteReality: Graphics-Ready 3D Scene Reconstruction from RGB-D Scans},
   author={Huang, Zhening and Wu, Xiaoyang and Zhong, Fangcheng and Zhao, Hengshuang and Nießner, Matthias and Lasenby, Joan},
   journal={arXiv preprint},
-  year={2024}
+  year={2025}
 }</code></pre>
             </div>
         </div>

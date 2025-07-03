@@ -107,13 +107,13 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.7rem 1.4rem;
+    padding: 0.4rem 1rem;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 5px;
     font-weight: 500;
     transition: all 0.2s;
     border: 2px solid transparent;
-    font-size: 1rem;
+    font-size: 0.97rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .btn-primary {
@@ -150,7 +150,18 @@ body {
     font-size: 1rem;
     margin-bottom: 0;
     line-height: 1.6;
-    color: #4b5563;
+    color: #5d2f86;
+}
+
+.authors a {
+    color: #5d2f86;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.authors a:hover {
+    color: #4a1f6b;
+    text-decoration: underline;
 }
 
 .institutions {
@@ -540,8 +551,29 @@ body {
 }
 
 .limitations-content {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 1000px;
+    margin: 32px auto 0 auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(93,47,134,0.06);
+    padding: 2.2rem 2.5rem;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    color: #374151;
+}
+.limitations-content ul {
+    margin-left: 1.5em;
+    margin-top: 1em;
+    margin-bottom: 0;
+    padding-left: 0;
+    text-align: left;
+}
+.limitations-content li {
+    margin-bottom: 1.1em;
+    text-align: left;
+}
+.limitations-content p {
+    text-align: left;
 }
 
 .limitation-item {
@@ -932,6 +964,12 @@ body {
     margin-top: 0.2em;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+    white-space: nowrap;
+}
+@media (max-width: 800px) {
+    .hero-title-sub {
+        white-space: normal;
+    }
 }
 @media (max-width: 600px) {
     .hero-title-row {
@@ -968,15 +1006,14 @@ body {
     margin-bottom: 1.2em;
 }
 .abstract-text {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     font-size: 1.18rem;
     line-height: 1.7;
     color: #374151;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-    padding: 2rem 2.2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(93,47,134,0.07);
+    padding: 2.5rem 3.5rem;
 }
 
 /* Make LiteReality name much larger */
@@ -1019,4 +1056,13 @@ body {
 .learn-more {
     text-align: center;
     padding: 60px 0;
+} 
+
+.examples .hero-description {
+    max-width: 1200px !important;
+    text-align: center;
+} 
+
+.repainting .hero-description {
+    max-width: 1200px !important;
 } 

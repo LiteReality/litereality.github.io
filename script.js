@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoFiles = [
         { video: 'video_demo/example_1-1.mp4', thumb: 'thumbnails/example_1_thumb.jpg' },
         { video: 'video_demo/example_2-1.mp4', thumb: 'thumbnails/example_2_thumb.jpg' },
-        { video: 'video_demo/example_3-1.mp4', thumb: 'thumbnails/example_4_thumb.jpg' },
+        { video: 'video_demo/example_3-1.mp4', thumb: 'thumbnails/example_3_thumb.jpg' },
         { video: 'video_demo/example_4-1.mp4', thumb: 'thumbnails/example_4_thumb.jpg' },
         { video: 'video_demo/example_5-1.mp4', thumb: 'thumbnails/example_5_thumb.jpg' },
         { video: 'video_demo/example_6-1.mp4', thumb: 'thumbnails/example_6_thumb.jpg' },
@@ -249,60 +249,56 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
     const thumbnailsContainer = document.getElementById('examples-thumbnails');
     const videoPlayer = document.getElementById('examples-video-player');
+    let caption = document.getElementById('examples-caption');
+    if (!caption) {
+        caption = document.createElement('div');
+        caption.id = 'examples-caption';
+        caption.className = 'application-caption';
+        videoPlayer.parentNode.appendChild(caption);
+    }
 
-    // Center the thumbnails row
-    thumbnailsContainer.style.display = 'flex';
-    thumbnailsContainer.style.justifyContent = 'center';
-    thumbnailsContainer.style.alignItems = 'center';
-    thumbnailsContainer.style.gap = '16px';
-    thumbnailsContainer.style.marginBottom = '20px';
-
-    function createThumbnail(videoObj, idx) {
+    thumbnailsContainer.innerHTML = '';
+    videoFiles.forEach((obj, idx) => {
         const thumbDiv = document.createElement('div');
-        thumbDiv.className = 'thumbnail';
+        thumbDiv.className = 'app-thumbnail';
         thumbDiv.style.cursor = 'pointer';
         thumbDiv.style.borderRadius = '8px';
         thumbDiv.style.overflow = 'hidden';
         thumbDiv.style.border = '2px solid transparent';
-        thumbDiv.style.width = '90px';
-        thumbDiv.style.height = '60px';
+        thumbDiv.style.width = '120px';
+        thumbDiv.style.height = '80px';
         thumbDiv.style.position = 'relative';
         thumbDiv.style.background = '#eee';
 
-        // Use static image for thumbnail
         const img = document.createElement('img');
-        img.src = videoObj.thumb;
-        img.alt = 'Video thumbnail';
+        img.src = obj.thumb;
+        img.alt = 'Example video thumbnail';
         img.style.width = '100%';
         img.style.height = '100%';
         img.style.objectFit = 'cover';
         thumbDiv.appendChild(img);
 
-        // Click event
         thumbDiv.addEventListener('click', function() {
-            // Remove active from all
-            document.querySelectorAll('.thumbnail').forEach(t => t.style.border = '2px solid transparent');
+            document.querySelectorAll('.app-thumbnail').forEach(t => t.style.border = '2px solid transparent');
             thumbDiv.style.border = '2px solid #2563eb';
-            // Set video
-            videoPlayer.src = videoObj.video;
+            videoPlayer.src = obj.video;
             videoPlayer.load();
             videoPlayer.play();
+            caption.textContent = `Example ${idx + 1}`;
         });
 
         // Set first as active
         if (idx === 0) {
             setTimeout(() => {
                 thumbDiv.style.border = '2px solid #2563eb';
-                videoPlayer.src = videoObj.video;
+                videoPlayer.src = obj.video;
                 videoPlayer.load();
+                caption.textContent = `Example 1`;
             }, 100);
         }
 
         thumbnailsContainer.appendChild(thumbDiv);
-    }
-
-    // Generate thumbnails
-    videoFiles.forEach((obj, idx) => createThumbnail(obj, idx));
+    });
 });
 
 // === Applications Interactive Gallery ===
