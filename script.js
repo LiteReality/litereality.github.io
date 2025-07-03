@@ -303,9 +303,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // === Applications Interactive Gallery ===
 const appVideos = [
-    { src: 'application_1_resized.mp4', caption: 'Relighting', thumb: 'thumbnails/example_1_thumb.jpg' },
-    { src: 'application_2.mp4', caption: 'Interactable Scene', thumb: 'thumbnails/example_2_thumb.jpg' },
-    { src: 'application_3_resized.mp4', caption: 'Physically Based Interaction', thumb: 'thumbnails/example_4_thumb.jpg' }
+    { src: 'application_1_resized.mp4', caption: 'Relighting', thumb: 'thumbnails/application_1_thumb.jpg' },
+    { src: 'application_2.mp4', caption: 'Interactable Scene', thumb: 'thumbnails/application_2_thumb.jpg' },
+    { src: 'application_3_resized.mp4', caption: 'Physically Based Interaction', thumb: 'thumbnails/application_3_thumb.jpg' }
 ];
 const appThumbs = document.getElementById('applications-thumbnails');
 const appPlayer = document.getElementById('applications-video-player');
