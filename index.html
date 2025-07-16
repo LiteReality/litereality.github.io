@@ -39,6 +39,8 @@
                 <li><a href="#applications">Applications</a></li>
                 <li><a href="#repainting">PBR Painting</a></li>
                 <li><a href="#limitations">Limitations</a></li>
+                <li><a href="#related-work">Related Work</a></li>
+                <li><a href="#acknowledgments">Acknowledgments</a></li>
                 <li><a href="#citation">Citation</a></li>
             </ul>
         </div>
@@ -223,28 +225,27 @@
         </div>
     </section>
 
-        <!-- Applications Section -->
-        <section id="applications" class="applications">
-            <div class="container">
-                <h2>Applications</h2>
-                <div class="hero-description">
-                    <p>
-                        Creating interactive, graphics-ready scenes unlocks a wide range of application scenarios. 
-                        Here, we showcase a few examples, including flexible relighting, physics-based interactions, and object-level manipulation. These capabilities open the door to even more applications, such as VR/AR experiences, robotics simulation, interior design, and digital twin systems.
-                    </p>
-                </div>
-                <div id="applications-thumbnails" class="applications-thumbnails" style="display: flex; justify-content: center; gap: 18px; margin-bottom: 20px;"></div>
-                <div class="applications-video-container">
-                    <video id="applications-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div id="applications-caption" class="application-caption" style="margin-top: 10px; text-align: center; color: #2563eb; font-weight: 500;"></div>
-                </div>
+    <!-- Applications Section -->
+    <section id="applications" class="applications">
+        <div class="container">
+            <h2>Applications</h2>
+            <div class="hero-description">
+                <p>
+                    Creating interactive, graphics-ready scenes unlocks a wide range of application scenarios. 
+                    Here, we showcase a few examples, including flexible relighting, physics-based interactions, and object-level manipulation. These capabilities open the door to even more applications, such as VR/AR experiences, robotics simulation, interior design, and digital twin systems.
+                </p>
             </div>
-        </section>
+            <div id="applications-thumbnails" class="applications-thumbnails" style="display: flex; justify-content: center; gap: 18px; margin-bottom: 20px;"></div>
+            <div class="applications-video-container">
+                <video id="applications-video-player" controls style="width: 100%; max-width: 900px; max-height: 500px; display: block; margin: 0 auto; background: #000; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div id="applications-caption" class="application-caption" style="margin-top: 10px; text-align: center; color: #2563eb; font-weight: 500;"></div>
+            </div>
+        </div>
+    </section>
 
-        
     <!-- Limitations Section -->
     <section id="limitations" class="limitations">
         <div class="container">
@@ -261,20 +262,59 @@
                       Our material-painting stage skips any explicit lighting estimation. While this simplifies the pipeline, it also reduces the photorealism of the rendered scenes compared to the original captures.
                   </li>
                   <li>🐁 <strong>Exclusion of small objects:</strong><br>
-                      LiteReality currently focuses on reconstructing room-defining elements (similar to Apple’s RoomPlan); smaller objects are not yet included in the pipeline.
+                      LiteReality currently focuses on reconstructing room-defining elements (similar to Apple's RoomPlan); smaller objects are not yet included in the pipeline.
                   </li>
                 </ul>
             </div>
         </div>
     </section>
 
-    <!-- Learn More Section -->
+<!-- Learn More Section -->
     <section id="learn-more" class="learn-more">
         <div class="container">
             <h2>More Details?</h2>
             <div class="learn-more-text">
                 For more details on methodologies, evaluation metrics, comparison with baselines, and the LiteReality database, please refer to our paper.<br><br>
                 <a href="https://arxiv.org/abs/2507.02861" class="btn btn-primary learn-more-btn" target="_blank" style="font-size:1.2rem; padding: 0.8em 2em; margin-top: 1em;">Read the Paper</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Related Work Section -->
+    <section id="related-work" class="related-work">
+        <div class="container">
+            <h2>Related Work</h2>
+            <div class="hero-description">
+                <p>
+                    Some prior and concurrent works that are related to our project — from which we have drawn valuable insights — include (but are not limited to):
+                </p>
+            </div>
+            <div class="related-work-list">
+                <ul>
+                    <li><a href="https://arxiv.org/abs/2307.03244" target="_blank">PSDR‑Room: Single Photo to Scene using Differentiable Rendering</a></li>
+                    <li><a href="https://arxiv.org/abs/2401.06056" target="_blank">MatSynth: A Modern PBR Materials Dataset</a></li>
+                    <li><a href="https://arxiv.org/abs/2212.04819" target="_blank">Phone2Proc: Bringing Robust Robots Into Our Chaotic World</a></li>
+                    <li><a href="https://arxiv.org/abs/2306.09310" target="_blank">Infinite Photorealistic Worlds Using Procedural Generation (Infinigen)</a></li>
+                    <li><a href="https://arxiv.org/abs/2406.11824" target="_blank">Infinigen Indoors: Photorealistic Indoor Scenes using Procedural Generation</a></li>
+                    <li><a href="https://dl.acm.org/doi/10.1145/3641519.3657504" target="_blank">MaPa: Text-driven Photorealistic Material Painting for 3D Shapes</a></li>
+                    <li><a href="https://arxiv.org/abs/2207.00757" target="_blank">PhotoScene: Photorealistic Material and Lighting Transfer for Indoor Scenes</a></li>
+                    <li><a href="https://arxiv.org/abs/2502.12894" target="_blank">CAST: Component-Aligned 3D Scene Reconstruction from a Single RGB Image</a></li>
+                    <li><a href="https://arxiv.org/abs/2410.07408" target="_blank">Automated Creation of Digital Cousins for Robust Policy Learning</a></li>
+                    <li><a href="https://openaccess.thecvf.com/content/CVPR2025/html/Yu_METASCENES_Towards_Automated_Replica_Creation_for_Real-world_3D_Scans_CVPR_2025_paper.html" target="_blank">MetaScenes: Towards Automated Replica Creation for Real-world 3D Scans</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acknowledgments Section -->
+    <section id="acknowledgments" class="acknowledgments">
+        <div class="container">
+            <h2>Acknowledgments</h2>
+            <div class="acknowledgments-text">
+                <p>
+                    This project was supported by the Girton College, Cambridge Postgraduate Research Fellowship. We gratefully acknowledge the insightful discussions and feedback from Prof Kwang Moo Yi, Erqun Dong, Weiyang Liu, Prof Ayush Tewari, and Shangzhan Zhang throughout the course of the project. We also appreciate the kind support from Prof. Angela Dai for the voiceover contribution, and we thank Jieying Chen for her help with proofreading the paper.
+                </p>
             </div>
         </div>
     </section>
