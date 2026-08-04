@@ -171,7 +171,7 @@
 
   /* ---- applications ---- */
   .apps{display:flex;flex-direction:column;gap:30px}
-  .app{display:grid;grid-template-columns:.85fr 1.15fr;gap:32px;align-items:center}
+  .app{display:grid;grid-template-columns:.58fr 1.42fr;gap:28px;align-items:center}
   @media(max-width:760px){.app{grid-template-columns:1fr;gap:16px}}
   .app h3{font-size:20px;margin-bottom:9px}
   .app p{font-size:14.5px;color:var(--ink-2);line-height:1.55}
@@ -389,7 +389,7 @@
       </div>
       <div class="app reveal">
         <div>
-          <h3>Intrinsic outputs</h3>
+          <h3>Intrinsics</h3>
           <p>A fully authored scene renders perfect intrinsics for free: pixel-exact segmentation, depth, normals and albedo, from the same cameras.</p>
         </div>
         <video src="apps/intrinsics.mp4" poster="apps/intrinsics_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Segmentation and depth rendered from the authored scene"></video>
