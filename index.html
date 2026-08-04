@@ -457,14 +457,14 @@ const BASE = "https://litereality-viewer.huangzhening.workers.dev/recon/";
 // gallery
 const SCENES = [
   ["Office-Elliott-QC", "The Studio Office", "office · fixtures", "studio-office"],
-  ["London-Office-Zhening-QC", "The Open Office", "breakout · games", "open-office"],
+  ["fallside-office-Zhening-QC", "The Private Office", "desk · blinds", "private-office"],
   ["MIL-Meeting-Zhening-QC", "The Boardroom", "meeting · blinds", "boardroom"],
-  ["meeting_room_cooperation-others-QC", "The Glass Room", "glass partition", "glass-room"],
-  ["Kitchen-Xiaoyang_Lyu-QC", "The Kitchen", "fitted units", "kitchen"],
+  ["PSi_2_meeting-Zhening-QC", "The Meeting Room", "meeting · chairs", "meeting-room"],
+  ["Psi_2_seminar-Zhening-QC", "The Seminar Room", "seminar · tables", "seminar-room"],
   ["fallside-kitchen-Zhening-QC", "The Kitchenette", "kitchen nook", "kitchenette"],
   ["Airbnb-Room-Zhening-QC", "The Garden Room", "sunroom · glazing", "garden-room"],
   ["Airbnb-Cam-Zhening-QC", "The Bedroom", "bedroom", "bedroom"],
-  ["multi-room-Apartment-Kailang_Xu-QC", "The Apartment", "multi-room", "apartment"],
+  ["Corridors-MIL-Zhening-QC", "The Library", "shelves · books", "library"],
 ];
 grid.innerHTML = SCENES.map(([id, name, tag, key]) => `
   <a class="gcard" href="${BASE}${encodeURIComponent(id)}/">
