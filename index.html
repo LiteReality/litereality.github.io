@@ -113,19 +113,30 @@
   .tab.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
   .openfull{margin-left:auto;font-family:var(--mono);font-size:12px;white-space:nowrap}
 
-  .frame{position:relative;border:1px solid var(--line-2);border-radius:12px;
-    overflow:hidden;background:#0D0D0C}
-  .frame iframe{display:block;width:100%;height:clamp(560px,74vh,740px);border:0}
+  .frame{position:relative;height:clamp(560px,74vh,740px);border:1px solid var(--line-2);
+    border-radius:12px;overflow:hidden;background:#0D0D0C}
+  .frame iframe{display:block;width:100%;height:100%;border:0}
+  .poster{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   /* shield: blocks scroll-hijack until you click in; re-arms when the cursor leaves */
   .veil{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     border:0;cursor:pointer;font:inherit;background:rgba(10,12,14,.42);
     backdrop-filter:blur(1.5px);transition:background .2s}
-  .veil:hover{background:rgba(10,12,14,.3)}
   .veil span{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;
     letter-spacing:-.01em;color:#fff;background:var(--blue);border-radius:999px;
     padding:13px 26px;box-shadow:0 10px 30px -8px rgba(12,140,233,.7);transition:transform .2s,background .2s}
-  .veil:hover span{transform:translateY(-2px);background:var(--blue-2)}
+  @media(hover:hover){
+    .veil:hover{background:rgba(10,12,14,.3)}
+    .veil:hover span{transform:translateY(-2px);background:var(--blue-2)}
+  }
   .veil.off{display:none}
+  /* touch: no inline WebGL. mouseleave never fires, so a dismissed shield would
+     trap the page scroll under the canvas — tap opens the full viewer instead. */
+  @media(hover:none){
+    .frame{height:auto;aspect-ratio:4/3}
+    .frame iframe{display:none}
+    .poster{display:block}
+    .veil span{font-size:14px;padding:12px 20px;text-align:center}
+  }
 
   /* ---- scanner app ---- */
   .ctacard{border:1px solid var(--line-2);border-radius:16px;padding:38px;
@@ -292,7 +303,8 @@
       <a class="openfull" id="frameOpen" href="https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/" target="_blank" rel="noopener">open full viewer ↗</a>
     </div>
     <div class="frame reveal">
-      <iframe id="frameView" src="https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/?embed=1" title="Interactive reconstruction" loading="lazy" allow="fullscreen"></iframe>
+      <iframe id="frameView" data-src="https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/?embed=1" title="Interactive reconstruction" loading="lazy" allow="fullscreen"></iframe>
+      <img class="poster" id="framePoster" src="gallery/studio-office.jpg" alt="" aria-hidden="true">
       <button class="veil" id="veil"><span>Click to explore this room</span></button>
     </div>
   </div>
@@ -472,26 +484,36 @@ grid.innerHTML = SCENES.map(([id, name, tag, key]) => `
     <div class="gmeta"><div><div class="n">${name}</div><div class="t">${tag}</div></div><span class="go" aria-hidden="true">↗</span></div>
   </a>`).join("");
 
-// viewer tabs
+// viewer tabs — [scene id, label, poster in gallery/]
 const VIEWS = [
-  ["Office-Elliott-QC", "Elliott Office"],
-  ["MIL-Meeting-Zhening-QC", "MIL Meeting Room"],
-  ["fallside-kitchen-Zhening-QC", "Fallside Kitchen"],
-  ["Airbnb-Room-Zhening-QC", "Airbnb Sunroom"],
+  ["Office-Elliott-QC", "Elliott Office", "studio-office"],
+  ["MIL-Meeting-Zhening-QC", "MIL Meeting Room", "boardroom"],
+  ["fallside-kitchen-Zhening-QC", "Fallside Kitchen", "kitchenette"],
+  ["Airbnb-Room-Zhening-QC", "Airbnb Sunroom", "garden-room"],
 ];
+
+// Touch has no hover, so a dismissed shield could never re-arm and the canvas
+// would eat the page scroll. Phones get a still and a link out instead.
+const TOUCH = matchMedia("(hover:none)").matches;
+if (!TOUCH) frameView.src = frameView.dataset.src;
+if (TOUCH) veil.querySelector("span").textContent = "Open the interactive viewer ↗";
+
 tabs.innerHTML = VIEWS.map(([id, nm], i) =>
-  `<button class="tab${i ? "" : " on"}" data-id="${id}">${nm}</button>`).join("");
+  `<button class="tab${i ? "" : " on"}" data-id="${id}" data-poster="${VIEWS[i][2]}">${nm}</button>`).join("");
 tabs.onclick = e => {
   const b = e.target.closest(".tab");
   if (!b) return;
   tabs.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
   frameOpen.href = BASE + encodeURIComponent(b.dataset.id) + "/";
-  frameView.src = frameOpen.href + "?embed=1";  // embed=1 strips the viewer's page chrome
+  framePoster.src = `gallery/${b.dataset.poster}.jpg`;
+  if (!TOUCH) frameView.src = frameOpen.href + "?embed=1";  // embed=1 strips the viewer's chrome
   veil.classList.remove("off");
 };
 
-// let the page scroll past the viewer until you click into it
-veil.onclick = () => veil.classList.add("off");
+veil.onclick = () => {
+  if (TOUCH) return void open(frameOpen.href, "_blank", "noopener");
+  veil.classList.add("off");           // desktop: reveal the live viewer
+};
 veil.parentElement.onmouseleave = () => veil.classList.remove("off");
 
 // right rail: mark the section crossing the viewport middle
