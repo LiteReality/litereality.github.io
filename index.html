@@ -82,9 +82,10 @@
     line-height:1.32;margin:18px auto 0;max-width:32ch}
   .lede{font-size:17px;color:var(--ink-2);margin:20px auto 0;max-width:62ch;line-height:1.55}
   .lede b{color:var(--ink);font-weight:600}
-  .authors{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-top:26px;
-    font-family:var(--mono);font-size:13px}
+  .authors{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;
+    gap:4px 18px;margin-top:26px;font-family:var(--mono);font-size:13px}
   .authors a{color:var(--ink-2);white-space:nowrap}
+  .authors sup{line-height:0}
   .authors a:hover{color:var(--blue-2)}
   .contrib{text-align:center;margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
   .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -97,7 +98,7 @@
   .btn-o{border-color:var(--line-2);color:var(--ink)}
   .btn-o:hover{border-color:var(--blue);color:var(--blue-2)}
   .btn-d{border-color:var(--line);color:var(--ink-3);pointer-events:none}
-  .hero-video{max-width:920px;margin:44px auto 0;padding:0 24px}
+  .hero-video{max-width:var(--maxw);margin:44px auto 0;padding:0 24px}
   .hero-video video{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;
     border-radius:12px;border:1px solid var(--line);background:#0E0E0D;
     box-shadow:0 24px 60px -36px rgba(17,17,17,.5)}
@@ -260,8 +261,8 @@
       <img src="logo.png" alt="LiteReality-Agent logo">
       <h1>LiteReality<i>-</i>Agent</h1>
     </div>
-    <p class="subtitle">An Agentic System for Code<i>-</i>Based Indoor Reconstruction from RGB<i>-</i>D Scans</p>
-    <p class="lede">The <b>first open-source, end-to-end toolkit</b> for reconstructing interactable indoor 3D scenes. Scan a room with the iOS app; the agent turns it into a complete, graphics-ready scene with articulated assets.</p>
+    <p class="subtitle">An Agentic System for Interactable 3D Indoor Scene Reconstruction</p>
+    <p class="lede">An <b>open-source, end-to-end toolkit</b> for reconstructing interactable indoor 3D scenes. Scan a room with the iOS app; the agent turns it into a complete, graphics-ready scene with articulated assets.</p>
     <div class="authors">
       <a href="https://zheningh.github.io/" target="_blank" rel="noopener">Zhening&nbsp;Huang<sup>*</sup></a>
       <a href="https://www.linkedin.com/in/yueyan-li-1b21a1251/" target="_blank" rel="noopener">Yueyan&nbsp;Li<sup>*</sup></a>
@@ -434,9 +435,9 @@
     </div>
     <div>
       <h3>Citation</h3>
-<pre>@article{huang2026litereality,
-  title   = {LiteReality-Agent: An Agentic Harness for
-             Simulation-Ready Indoor Reconstruction},
+<pre>@article{huang2026litereality-agent,
+  title   = {{LiteReality-Agent}: An Agentic System for
+             Interactable 3D Indoor Scene Reconstruction},
   author  = {Huang, Zhening and Li, Yueyan and Chiu, Johnathan and
              Lyu, Xiaoyang and Zhou, Matt and Yao, Yuxin and
              Lasenby, Joan and Wu, Shangzhe},
