@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  LiteReality-Agent — prose is blog.txt verbatim (2026-08-05).
+
+  Two mechanical fixes only, each marked TODO(edit) where it appears:
+    - "require human amount of human effort" -> "a large amount of"
+    - "adapting or even overfitting , the policy" -> comma placement
+
+  ADDED BEYOND blog.txt: the closing sections "Results", "Editing the
+  reconstructed scene" and "Limitations", plus the expanded tool and QC
+  material (sourced from agent-tools.md). blog.txt itself ends at Quality
+  Control.
+
+  All media now comes from source/media/, compressed into assets/. No
+  placeholder clips remain.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>LiteReality-Agent — Zhening Huang</title>
+  <meta name="description" content="An open-source, end-to-end toolkit for reconstructing interactable indoor 3D scenes — scan a room with the iOS app, and the agent turns it into a graphics-ready scene with articulated assets.">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction">
+  <meta property="og:description" content="An open-source, end-to-end toolkit for reconstructing interactable indoor 3D scenes — scan a room with the iOS app, and the agent turns it into a graphics-ready scene with articulated assets.">
+  <meta property="og:image" content="assets/images/og.png">
+  <meta property="article:published_time" content="2026-08-04">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="stylesheet" href="assets/css/blog.css?v=4">
+</head>
+
+<body>
+
+  <!-- ===================================================================== -->
+  <!-- HEADER                                                                -->
+  <!-- ===================================================================== -->
+  <header class="site-header wrap">
+    <a class="site-logo" href="../">← LiteReality-Agent</a>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- TITLE + META                                                          -->
+  <!-- ===================================================================== -->
+  <div class="wrap">
+    <h1 class="post-title">LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction</h1>
+  </div>
+
+  <article class="prose">
+
+    <dl class="post-meta">
+      <dt>Published</dt>
+      <dd>August 4, 2026</dd>
+
+      <dt>Email</dt>
+      <dd><a href="mailto:huangzhening@gmail.com">huangzhening@gmail.com</a></dd>
+
+      <dt>Authors</dt>
+      <dd>
+        <details class="authors">
+          <summary>Zhening Huang and collaborators</summary>
+          <p>
+            Zhening Huang, Yueyan Li, Jonathan Chiu, Xiaoyang Lyu, Matt Zhou,
+            Yuxin Yao, Joan Lasenby, Shangzhe Wu
+          </p>
+          <!-- TODO: affiliations & venue still provisional (from backup.md). -->
+        </details>
+      </dd>
+
+      <!-- TODO: paper link still needed for LiteReality-Agent itself. -->
+      <dt>Links</dt>
+      <dd>
+        <a href="https://litereality.github.io/Litereality-agent-site/">LiteReality-Agent</a> &middot;
+        <a href="https://github.com/LiteReality/LiteReality-Agent">Code</a> &middot;
+        <a href="https://apps.apple.com/ph/app/litereality/id6774158260">App</a>
+      </dd>
+    </dl>
+
+    <!-- =================================================================== -->
+    <!-- [TEXT] The one-line answer to "why should I read this?"              -->
+    <!-- =================================================================== -->
+    <p class="lead">
+      An open-source, end-to-end toolkit for reconstructing interactable indoor 3D
+      scenes. Scan a room with the
+      <a href="https://apps.apple.com/ph/app/litereality/id6774158260">iOS app</a>;
+      the agent turns it into a complete, graphics-ready scene with articulated
+      assets.
+    </p>
+
+    <!-- =================================================================== -->
+    <!-- [VIDEO] Teaser — source/media/teaser.mp4                             -->
+    <!-- =================================================================== -->
+    <figure class="media">
+      <div class="video-card">
+        <video src="assets/videos/teaser.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        LiteReality-Agent reconstructs interactable 3D scenes from RGB-D scans.
+      </figcaption>
+    </figure>
+
+    <!-- =================================================================== -->
+    <!-- Intro and background                                                 -->
+    <!-- =================================================================== -->
+    <h2>Intro and background</h2>
+
+    <p>
+      About a year ago, we introduced <a href="https://litereality.github.io/">LiteReality</a>, a system that
+      turns a real-world scan into a graphics-ready environment. The goal was to
+      make reconstruction compatible with the traditional graphics pipeline, so a
+      scanned room could drop straight into downstream applications like gaming,
+      simulation, and virtual reality.
+    </p>
+
+    <p>
+      Much of that effort went into a handcrafted pipeline that included layout
+      parsing, asset retrieval, and material painting, all stitched together to
+      achieve a realistic result. While it worked to some extent, it was difficult
+      to scale to more challenging environments and could only capture what it had
+      been specifically designed to handle.
+    </p>
+
+    <!-- [IMAGE] the original LiteReality pipeline — source/media/pipeline_main.png -->
+    <figure class="media">
+      <div class="image-card">
+        <img src="assets/images/litereality-pipeline.png"
+             alt="The four-stage LiteReality pipeline: scene parsing from an RGB-D scan, object reconstruction by retrieval from a database, material painting, and procedural reconstruction into a graphics-ready scene.">
+      </div>
+      <figcaption>
+        The <a href="https://litereality.github.io/">LiteReality</a> pipeline — a
+        handcrafted workflow.
+      </figcaption>
+    </figure>
+
+    <p>
+      This year, we have witnessed a surge in the capabilities of coding agents for
+      3D modelling. Projects such as <a href="https://articraft3d.github.io/">ArtiCraft</a>, along with startups
+      and tools such as <a href="https://moonlakeai.com/">Moonlake</a> and <a href="https://github.com/ahujasid/blender-mcp">BlenderMCP</a>,
+      have demonstrated the impressive things agents can achieve in 3D modelling.
+      While generating visually compelling 3D content from text prompts is
+      relatively easy, faithfully reconstructing an environment grounded in reality
+      remains much more difficult. This is especially true at the room or building
+      scale, where the agent must coordinate a large amount of scan data across
+      different viewpoints and spaces while preserving geometric and spatial
+      consistency. This is why most existing work in this domain focuses on
+      generation or reconstruction conditioned on a single image.
+    </p>
+
+    <!-- =================================================================== -->
+    <!-- Why We Want to Do This                                               -->
+    <!-- =================================================================== -->
+    <h2>Why We Want to Do This</h2>
+
+    <p>
+      We believe there is a lot of value in turning real-world scans of rooms into
+      interactive 3D scenes. There are two use cases that make the most sense to
+      us.
+    </p>
+
+    <h3>1. Recreating a Place You Know is cooler than purely generative</h3>
+
+    <p>
+      People often have a stronger connection to places they are already familiar
+      with — the rooms where they have spent time, made memories, or shared
+      experiences with others. Because of this, a reconstructed real-world space
+      can feel more meaningful and engaging than an entirely generated environment,
+      even when the reconstruction is not perfectly accurate. A familiar room
+      could, for example, be turned into an interactive space where users can meet
+      friends, rearrange furniture, test different decorations, or visualise
+      possible renovations. Standard mesh or Gaussian reconstructions can capture
+      the geometry and appearance of a space, but they cannot offer this kind of
+      interactive experience. What could be interesting is a representation that
+      balances these properties: it should remain visually realistic and
+      recognisable while also being structured, editable, and interactive, in a form
+      closer to how 3D environments are built in traditional graphics pipelines.
+    </p>
+
+    <h3>2. Reality-grounded simulation built fast</h3>
+
+    <p>
+      Another motivation is the possibility of significantly reducing the cost of
+      building reality-grounded simulation environments. There is still a gap
+      between an interactive scene and a fully simulation-ready one, but we believe
+      this gap is manageable through continued engineering work. If this process can
+      eventually become fast and reliable enough, it could offer an interesting way
+      to adapt robots to the specific environments in which they operate.
+    </p>
+
+    <p>
+      <mark>Imagine a robot entering a new room and having a realistic simulation of
+      that space built from a scan within a short period of time.</mark> That simulation could
+      then be used to train, test, or fine-tune the robot's policy for that
+      particular environment. This may be especially relevant in real-world
+      deployment settings, where a robot is likely to remain in the same home,
+      office, warehouse, or hospital for a long time and repeatedly perform a
+      limited set of tasks. In such cases, adapting, or even overfitting, the policy
+      to that specific room could be practical.
+      <!-- TODO(edit): comma placement fixed here — draft read "adapting or even
+           overfitting , the policy". -->
+    </p>
+
+    <p>
+      We do not yet know how useful this approach will be in practice, but making
+      reality-grounded simulation faster and more accessible gives us a concrete way
+      to test this idea.
+    </p>
+
+    <h3>The Gap is real: there is no such tool for this</h3>
+
+    <p>
+      There are many possible motivations for this work, and several of these
+      hypotheses still need to be tested in real experiments/user feedback.
+      <mark>But the current gap is clear: there is no open-source, end-to-end tool
+      that lets users scan an indoor space and turn it into an interactive 3D
+      environment.</mark>
+    </p>
+
+    <p>
+      Anyone who wants to do this today usually has to build their own pipeline from
+      scratch. These systems are often fragile, hardly work, or require a large
+      amount of human effort to fix afterwards. LiteReality aims to bridge this gap
+      by providing a full-stack toolkit for the entire process.
+      <!-- TODO(edit): draft read "require human amount of human effort". Also
+           check whether this sentence means LiteReality or LiteReality-Agent. -->
+    </p>
+
+    <p>In this release, we provide two main components:</p>
+
+    <ul>
+      <li>
+        <strong><a href="https://apps.apple.com/ph/app/litereality/id6774158260">LiteReality App</a></strong>,
+        a scanner for capturing indoor spaces.
+      </li>
+      <li>
+        <strong><a href="https://github.com/LiteReality/LiteReality-Agent">LiteReality-Agent</a></strong>,
+        an agentic system that takes the captured scan and turns it into an
+        interactive 3D scene.
+      </li>
+    </ul>
+
+    <!-- [VIDEO] overview reel — source/media/webpage video.mp4 -->
+    <figure class="media">
+      <div class="video-card">
+        <video src="assets/videos/overview.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        The whole reconstruction pipeline, from scanning the room to interacting
+        with it. It really is this simple.
+      </figcaption>
+    </figure>
+
+    <!-- =================================================================== -->
+    <!-- How does it work                                                     -->
+    <!-- =================================================================== -->
+    <h2>How does it work</h2>
+
+    <h3>3.1 LiteReality App</h3>
+
+    <p>
+      For the scanning device, we chose LiDAR-equipped iPhones and iPads because
+      they are widely available consumer devices that can capture both visual and
+      geometric information about an indoor environment.
+    </p>
+
+    <p>
+      The app combines two Apple frameworks. ARKit provides the low-level,
+      frame-by-frame sensor data, while RoomPlan provides a higher-level structural
+      understanding of the room. During a scan, ARKit gives us camera frames
+      together with per-frame depth measurements, camera calibration, and the
+      estimated position and orientation of the device. RoomPlan uses the device's
+      camera and LiDAR scanner to identify the main structure of the room, including
+      walls, floors, doors, windows, and openings, as well as bounding boxes and
+      semantic categories for recognised furniture and appliances.
+    </p>
+
+    <!-- [VIDEO] the app itself — source/media/app_video.mp4 (portrait) -->
+    <figure class="media">
+      <div class="video-card ratio-auto" style="max-width:20rem;margin-inline:auto">
+        <video src="assets/videos/app-scan.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A scan in the LiteReality App: the RoomPlan session builds up the layout as
+        you walk the room, then the capture is named and exported.
+      </figcaption>
+    </figure>
+
+    <p>
+      The LiteReality App is designed primarily as a data-capture tool. It does not
+      perform the full scene reconstruction on the device. Each scan contains:
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Output</th><th>From</th><th>What it is</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RGB frames</td><td>ARKit</td>
+            <td>the camera images captured through the sweep</td>
+          </tr>
+          <tr>
+            <td>Depth &amp; confidence maps</td><td>LiDAR</td>
+            <td>per-frame depth, with a confidence map alongside it</td>
+          </tr>
+          <tr>
+            <td>Camera parameters</td><td>ARKit</td>
+            <td>per-frame intrinsics, poses, and timestamps</td>
+          </tr>
+          <tr>
+            <td>Point cloud</td><td>derived</td>
+            <td>a 3D point cloud reconstructed from the RGB-D observations</td>
+          </tr>
+          <tr>
+            <td>USDZ layout</td><td>RoomPlan</td>
+            <td>the room layout, plus the dimensions, categories, positions and
+                orientations of detected objects and structural elements</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Together, these outputs cover most of the information we would expect from a
+      practical scanner. We make the LiteReality App freely available and allow
+      users to access the full package of data, whether they want to use it with
+      LiteReality-Agent or with their own reconstruction pipeline.
+    </p>
+
+    <!-- [IMAGE] App Store card — source/media/app-store-card.png -->
+    <figure class="media">
+      <a href="https://apps.apple.com/ph/app/litereality/id6774158260">
+        <div class="image-card">
+          <img src="assets/images/litereality-app-store.png"
+               alt="App Store listing for LiteReality, a free LiDAR room scanner for iPhone.">
+        </div>
+      </a>
+      <figcaption>
+        <a href="https://apps.apple.com/ph/app/litereality/id6774158260">LiteReality
+        on the App Store</a> — free, for LiDAR-equipped iPhones and iPads.
+      </figcaption>
+    </figure>
+
+    <h3>3.2 <a href="https://github.com/LiteReality/LiteReality-Agent">LiteReality-Agent</a></h3>
+
+    <p>LiteReality-Agent has two stages:</p>
+
+    <ul>
+      <li>a deterministic scene initialisation stage; and</li>
+      <li>an agentic realism-authoring stage.</li>
+    </ul>
+
+    <h3>Scene Initialisation</h3>
+
+    <p>
+      The scanner provides a RoomPlan USDZ file containing the room layout and
+      bounding boxes of the main objects. Following the original
+      <a href="https://litereality.github.io/">LiteReality</a> pipeline, we
+      reconstruct each object separately and then compose them into a complete
+      room.
+    </p>
+
+    <p>
+      The object stage is where the two diverge. LiteReality <em>retrieved</em>
+      objects: it searched a curated database of artist-made models and picked the
+      closest visual match, which meant a room could only ever be furnished with
+      what the database already held. Here nothing is retrieved. Every object is
+      reconstructed from the scan's own images of it.
+    </p>
+
+    <p>
+      For each object, the system collects reference images from the scan and routes
+      it to one of two branches:
+    </p>
+
+    <ul>
+      <li>
+        procedural generation for objects that require structured geometry,
+        articulation, or interaction; or
+      </li>
+      <li>
+        TRELLIS-based image-to-3D generation for visually complex or mostly static
+        objects.
+      </li>
+    </ul>
+
+    <!-- [VIDEO] procedural branch — source/media/Sink_Storage0.mp4.
+         No corner tag: the video already carries its own badge. -->
+    <figure class="media">
+      <div class="video-card ratio-auto">
+        <video src="assets/videos/object-recon-sink.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A procedural reconstruction example — the unit turns closed, then again with
+        its doors open.
+      </figcaption>
+    </figure>
+
+    <!-- [VIDEO] TRELLIS branch — source/media/Sofa0.mp4 -->
+    <figure class="media">
+      <div class="video-card ratio-auto">
+        <video src="assets/videos/object-recon-sofa.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A 3D-generative reconstruction example — the same three panels, the other
+        branch.
+      </figcaption>
+    </figure>
+
+    <p>
+      Procedural assets are generated using an adapted version of
+      <a href="https://articraft3d.github.io/">ArtiCraft</a> with Blender Python as
+      the scene language. Adapting it also means we inherit a good deal of its
+      quality control over generated assets, and some of its progress towards
+      simulation-readiness. Once all assets are created, they are
+      placed into the room using the positions, orientations, and dimensions
+      estimated from the scan. The resulting scene then becomes the starting point
+      for the agentic authoring stage.
+    </p>
+
+    <!-- [VIDEO x2] staged pipeline walkthroughs — source/media/*_seq2.mp4.
+         Sits after the paragraph it illustrates: these run the whole
+         initialisation end to end, finishing on the composed scene. -->
+    <figure class="media">
+      <div class="media-grid">
+        <div class="video-card">
+          <span class="tag">kitchen</span>
+          <video src="assets/videos/pipeline-kitchen.mp4" loop muted playsinline preload="metadata"></video>
+        </div>
+        <div class="video-card">
+          <span class="tag">meeting room</span>
+          <video src="assets/videos/pipeline-meeting.mp4" loop muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+      <figcaption>
+        Initialisation on two rooms. Following the LiteReality pipeline, we build
+        the room layout and position the reconstructed objects inside it.
+      </figcaption>
+    </figure>
+
+    <!-- =================================================================== -->
+    <!-- The Agentic Authoring Loop                                           -->
+    <!-- =================================================================== -->
+    <h2>4. The Agentic Authoring Loop</h2>
+
+    <p>
+      The second stage takes the initialised room and iteratively improves its
+      realism through an agentic authoring loop.
+    </p>
+
+    <p>Our authoring loop follows several key design principles:</p>
+
+    <ol>
+      <li>
+        <strong>A confined authoring space.</strong> The agent operates primarily on
+        a single <code>Room.py</code> file — a Blender Python script that defines
+        how the room is constructed.
+      </li>
+      <li>
+        <strong>Task-specific tools.</strong> We provide a set of tools designed
+        specifically for this task. The agent can call them freely to gather and
+        inspect evidence, make decisions, and edit the scene accordingly.
+      </li>
+      <li>
+        <strong>A structured iteration process.</strong> Because it is difficult to
+        define a clear stopping condition for realism, we specify a fixed number of
+        tool calls and refinement iterations. As the agent approaches the end of
+        each iteration, it is explicitly instructed to consolidate its edits and
+        complete the current refinement stage.
+      </li>
+      <li>
+        <strong>A modular workflow.</strong> The pipeline is divided into
+        independent stages. It begins with refining wall PBR materials and fixtures,
+        followed by improving the objects constructed during initialisation.
+        Finally, the room passes through a series of quality-control checks to
+        ensure the output meets a consistent standard.
+      </li>
+    </ol>
+
+    <!-- [IMAGE] the authoring loop — source/media/fig2_authoring_loop_dark.png.
+         The figure is drawn dark; the card is dark in both themes so it does not
+         sit on a cream background. -->
+    <figure class="media">
+      <div class="image-card" style="background:#0d0d0b">
+        <img src="assets/images/authoring-loop.png"
+             alt="The authoring loop. The agent is the only writer: it calls a tool, the tool compiles and renders Room.py and reads the scan beside it, evidence piles up, the agent reads it back and edits Room.py via Edit and Write. Tools are select_view and render_and_compare to see, grid and check_collisions to measure, fetch_materials to acquire, critic to judge, plus Read, Glob, Edit and Write. When the critic accepts, the room goes to the deterministic QC gate.">
+      </div>
+      <figcaption>
+        One turn of the loop, numbered 1 to 5. Everything the agent learns arrives as evidence —
+        renders paired with the real photograph, walls measured in metres, objects
+        caught overlapping and how far to move them — and every change it makes goes
+        back through one file.
+      </figcaption>
+    </figure>
+
+    <!-- [IMAGE] the iteration budget — source/media/iteration-budget-dark.png -->
+    <figure class="media">
+      <div class="image-card" style="background:#0d0d0b">
+        <img src="assets/images/iteration-budget.png"
+             alt="Two diagrams. Left: a bar of 100 tool calls per iteration, where past call 85 the self-check tools switch off and the remaining calls are spent consolidating the edit. Right: iterations 1, 2 to N run in sequence before the next stage, each ending in the same consolidation phase.">
+      </div>
+      <figcaption>
+        What principle 3 looks like in practice. Realism has no natural stopping
+        condition, so the budget supplies one: past call 85 the tools that let the
+        agent look at its work switch off, and the calls that remain go to landing
+        the edit rather than reopening it. <em>N</em> is chosen up front rather than
+        discovered, so a stage always hands on a finished edit instead of an
+        abandoned one.
+      </figcaption>
+    </figure>
+
+    <h3>The tools</h3>
+
+    <p>
+      A closed set, designed for this task. Click one to see what it does.
+    </p>
+
+    <div class="toolbox">
+      <input type="radio" name="toolbox" id="tb-select" checked>
+      <input type="radio" name="toolbox" id="tb-render">
+      <input type="radio" name="toolbox" id="tb-grid">
+      <input type="radio" name="toolbox" id="tb-critic">
+      <input type="radio" name="toolbox" id="tb-mat">
+
+      <div class="toolbox-tabs">
+        <label for="tb-select">select_view</label>
+        <label for="tb-render">render_and_compare</label>
+        <label for="tb-grid">grid</label>
+        <label for="tb-critic">critic</label>
+        <label for="tb-mat">fetch_materials</label>
+      </div>
+
+      <div class="toolbox-panels">
+
+        <div class="toolbox-panel tb-p-select">
+          <div class="tool-role">see</div>
+          <p>
+            Which of the sixty-odd capture frames to actually look at. Ask for the
+            room and it returns the fewest frames that between them see every wall;
+            ask for one wall or one object and it ranks frames by how much of it
+            they see. A model asked to pick a frame number just guesses.
+          </p>
+          <div class="image-card">
+            <img src="assets/images/tool-select-view.png"
+                 alt="Three floor plans showing camera frusta. For the whole room, frames that together cover most of it; for one wall, the frames that see that wall best; for one object, the single frame that sees it best.">
+          </div>
+        </div>
+
+        <div class="toolbox-panel tb-p-render">
+          <div class="tool-role">see</div>
+          <p>
+            The render beside the real photograph, from the same camera pose, with
+            the annotation narrowing as the question narrows — whole room, one wall,
+            one object. The model is never asked to align two pictures in its head.
+          </p>
+          <div class="media-grid cols-3">
+            <div class="image-card">
+              <img src="assets/images/tool-compare-scene.png" alt="Render and real photograph side by side, every object labelled.">
+            </div>
+            <div class="image-card">
+              <img src="assets/images/tool-compare-wall.png" alt="Render and real photograph side by side, only one wall outlined.">
+            </div>
+            <div class="image-card">
+              <img src="assets/images/tool-compare-object.png" alt="Render and real photograph side by side, only one table boxed.">
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbox-panel tb-p-grid">
+          <div class="tool-role">measure</div>
+          <p>
+            A metric ruler drawn on a rectified wall: metres along the wall in red,
+            metres above the floor in blue. Reading beats estimating, and the numbers
+            you read are the numbers that go into the scene. The agent invented this
+            one — it hand-rolled the same thing in Bash thirteen times in a single
+            run before it existed as a tool.
+          </p>
+          <div class="image-card" style="max-width:19rem">
+            <img src="assets/images/tool-grid.jpg"
+                 alt="A wall under a metric grid, red verticals at 0.5, 1.0 and 1.5 metres and blue horizontals from z0.5 to z2.0.">
+          </div>
+        </div>
+
+        <div class="toolbox-panel tb-p-critic">
+          <div class="tool-role">judge</div>
+          <p>
+            A verdict the loop can branch on, rather than prose: pass or fail, a
+            score, and a list of what is wrong. The tool owns the grading prompt —
+            not the agent — so strictness is a property of the system instead of
+            whatever the model felt like asking for that turn. Near-misses fail.
+          </p>
+          <div class="image-card">
+            <img src="assets/images/tool-critic.png"
+                 alt="The critic takes a render and the real photograph plus a stated goal, and returns a verdict: FAIL, 4 out of 10, with specific issues such as walls too dark, floor too flat, chair wrong colour, whiteboard missing. Pass means move on; fail means fix, re-render and ask again.">
+          </div>
+        </div>
+
+        <div class="toolbox-panel tb-p-mat">
+          <div class="tool-role">acquire</div>
+          <p>
+            Procedural node materials look flat next to real captured ones. So:
+            search a free library of photo-scanned textures, download the colour,
+            roughness and normal maps, then tint the colour to what the photograph
+            actually shows. The colour moves and the pattern stays.
+          </p>
+          <div class="image-card">
+            <img src="assets/images/tool-fetch-material.png"
+                 alt="Four stages: a library of photo-scanned materials, a text search ranking candidates, the three downloaded maps, and the tint step where colour moves to the measured value while the pattern is preserved.">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <h3>Quality Control as a Gate</h3>
+
+    <p>
+      After authoring, the scene must pass a set of deterministic quality-control
+      checks before it can be exported. These checks include collision detection and
+      other tests for geometry, placement, materials, articulation, and scene
+      validity.
+    </p>
+
+    <p>
+      Most of that layer is arithmetic rather than a model judging its own work.
+      The geometry and placement checks are deterministic, resolving what has a
+      safe fix and reporting what does not; only the final pass over the room uses
+      a model, working through a fixed checklist. A scene leaves the pipeline only
+      once it clears the gate.
+    </p>
+
+    <h2>Results</h2>
+
+    <figure class="media">
+      <div class="media-grid cols-2">
+        <div class="video-card ratio-auto">
+          <video src="assets/videos/real-vs-recon-bedroom.mp4" loop muted playsinline preload="metadata"></video>
+        </div>
+        <div class="video-card ratio-auto">
+          <video src="assets/videos/real-vs-recon-meeting.mp4" loop muted playsinline preload="metadata"></video>
+        </div>
+      </div>
+      <figcaption>
+        Real capture against reconstruction, wiped side by side.
+        <!-- A shorter 16 s cut of the bedroom is at
+             assets/videos/real-vs-recon-bedroom-short.mp4 (source: comparison_2.mp4)
+             if you want to swap the 62 s one out. -->
+      </figcaption>
+    </figure>
+
+    <figure class="media">
+      <div class="video-card">
+        <video src="assets/videos/meeting-flythrough.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A flythrough of the finished meeting room.
+      </figcaption>
+    </figure>
+
+    <p>
+      These are two rooms out of more. See the rest in the
+      <a href="https://litereality.github.io/Litereality-agent-site/vr/index.html">gallery</a>.
+    </p>
+
+    <h2>Editing the reconstructed scene</h2>
+
+    <p>
+      Because the room is a <code>Room.py</code> file, editing it is a prompt away.
+    </p>
+
+    <p>
+      It is a programmable room, and a lot of what used to be hard is now one
+      sentence. Rearrange the furniture. Redecorate, pulling assets straight from
+      Sketchfab. Hand it a photograph and ask for that object, placed in the room.
+      And if part of the reconstruction is not right, say so — the agent goes back,
+      focuses on that piece, and does it again.
+    </p>
+
+    <figure class="media">
+      <div class="video-card">
+        <span class="tag">"expose the brickwork on the back wall"</span>
+        <video src="assets/videos/edit-text.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A <strong>material</strong> edit. Nothing moves and nothing is added — the
+        surface is repainted, and the four views update together because they are
+        four renders of one file.
+      </figcaption>
+    </figure>
+
+    <figure class="media">
+      <div class="video-card">
+        <span class="tag">"hang three pendant lamps over the table"</span>
+        <video src="assets/videos/edit-decor.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A <strong>lighting</strong> edit, and the case that needs new objects. The
+        lamps are fetched as real geometry, and the model decides where they hang —
+        over the table, at a height that clears it.
+      </figcaption>
+    </figure>
+
+    <figure class="media">
+      <div class="video-card">
+        <span class="tag">"we're doing standup in five — clear the floor"</span>
+        <video src="assets/videos/edit-rearrange.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        A <strong>layout</strong> edit, from an instruction that never names an
+        object. Working out that a standup means clearing floor space, and which
+        pieces are in the way, is the part the scene being code does not solve — but
+        collision checking is what confirms the furniture ended up somewhere legal.
+      </figcaption>
+    </figure>
+
+    <!-- =================================================================== -->
+    <!-- Intrinsics — added beyond blog.txt.                                  -->
+    <!-- =================================================================== -->
+    <h2>Intrinsics</h2>
+
+    <p>
+      A fully authored scene renders perfect intrinsics for free: pixel-exact
+      segmentation, depth, normals and albedo, from the same cameras.
+    </p>
+
+    <!-- [VIDEO] intrinsic passes — source/media/intrinsics.mp4 -->
+    <figure class="media">
+      <div class="video-card">
+        <video src="assets/videos/intrinsics.mp4" loop muted playsinline preload="metadata"></video>
+      </div>
+      <figcaption>
+        Wiping between passes on one view — albedo, depth, normals, instance and
+        semantic segmentation, materials. They are exact rather than estimated,
+        because the scene was authored rather than inferred.
+      </figcaption>
+    </figure>
+
+    <!-- =================================================================== -->
+    <!-- Limitations — added beyond blog.txt.                                 -->
+    <!-- =================================================================== -->
+    <h2>Limitations</h2>
+
+    <ol>
+      <li>
+        <strong>The scenes are not yet simulation-ready.</strong> Although the
+        reconstructed environments are interactive, this is not the same as being
+        ready for direct use in a simulator. Making an entire room
+        simulation-ready still requires substantial additional effort. However,
+        when combined with the progress made in
+        <a href="https://articraft3d.github.io/">ArtiCraft</a>, we believe this goal is
+        within reach. Once the individual objects are simulation-ready, the
+        remaining challenge is primarily to ensure that the overall scene layout is
+        physically valid and suitable for simulation. We expect this to be a more
+        manageable problem.
+      </li>
+      <li>
+        <strong>The system has not yet been tested at large scale.</strong> Our
+        current experiments focus on single-room environments of approximately
+        50 m² or less. Extending the system to larger spaces, more challenging
+        layouts, and multi-room environments will require further engineering and
+        evaluation. We do not consider this to be the most fundamental challenge,
+        but the system has not yet been sufficiently stress-tested under these
+        conditions. This is something we will keep working on.
+      </li>
+    </ol>
+
+    <!-- =================================================================== -->
+    <!-- Looking Ahead — added beyond blog.txt.                               -->
+    <!-- =================================================================== -->
+    <h2>Looking Ahead</h2>
+
+    <p>
+      The pace of progress in agentic systems is extraordinary, and many
+      capabilities that seemed difficult to imagine only a short time ago are
+      rapidly becoming possible. We are excited to see how this line of work
+      develops, and to continue maintaining LiteReality-Agent as a useful tool for
+      the community working on interactive 3D scene reconstruction.
+    </p>
+
+    <p>
+      Anyone interested in contributing, experimenting with the system, or exploring
+      related ideas is very welcome to
+      <a href="mailto:huangzhening@gmail.com">get in touch</a> with us.
+    </p>
+
+  </article>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER                                                                -->
+  <!-- ===================================================================== -->
+  <footer class="site-footer">
+    <a href="../">← LiteReality-Agent</a>
+    <a href="mailto:huangzhening@gmail.com">Contact</a>
+  </footer>
+
+  <script src="assets/js/blog.js"></script>
+</body>
+</html>

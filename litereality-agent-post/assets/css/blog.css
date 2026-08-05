@@ -1,0 +1,539 @@
+/* ==========================================================================
+   Blog — shared stylesheet
+   --------------------------------------------------------------------------
+   Design language (mirrors pi.website):
+     background   #F5F4EF  cream
+     text         #000     pure black
+     links        #595959  grey, underlined with a generous offset
+     rules/cards  #E6E0CB  warm border
+     body type    monospace, 14px, relaxed leading
+     display type serif, large, tight leading
+
+   You should not need to edit this file to write a post. Everything is
+   driven by class names documented in post-template.html.
+   ========================================================================== */
+
+/* --- Theme tokens --------------------------------------------------------- */
+
+:root {
+  --bg:          #f5f4ef;
+  --bg-sunken:   #efeee7;
+  --fg:          #000000;
+  --fg-muted:    #595959;
+  --link:        #595959;
+  --rule:        #e6e0cb;
+  --card:        #ffffff;
+  --tag:         #fbd45b;
+  --tag-fg:      #000000;
+  --shadow:      0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
+
+  --font-mono:   ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+  --font-serif:  "Iowan Old Style", "Palatino Linotype", Palatino,
+                 "Book Antiqua", Georgia, serif;
+
+  --measure:      48rem;   /* prose column width        */
+  --measure-wide: 70rem;   /* .breakout media max width */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #131310;
+    --bg-sunken: #1b1b17;
+    --fg:        #f2f1ea;
+    --fg-muted:  #a6a297;
+    --link:      #a6a297;
+    --rule:      #37352c;
+    --card:      #1c1c18;
+    --shadow:    0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  }
+}
+
+/* Manual override — set <html data-theme="light"> or "dark" to pin a theme. */
+:root[data-theme="light"] {
+  --bg: #f5f4ef; --bg-sunken: #efeee7; --fg: #000; --fg-muted: #595959;
+  --link: #595959; --rule: #e6e0cb; --card: #fff;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.10), 0 2px 4px -2px rgb(0 0 0 / 0.10);
+}
+:root[data-theme="dark"] {
+  --bg: #131310; --bg-sunken: #1b1b17; --fg: #f2f1ea; --fg-muted: #a6a297;
+  --link: #a6a297; --rule: #37352c; --card: #1c1c18;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+}
+
+/* --- Reset ---------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+@media (min-width: 768px) { body { padding: 3rem; } }
+
+img, video, iframe { display: block; max-width: 100%; }
+sub, sup { font-size: 50%; line-height: 0; }
+
+::selection { background: var(--tag); color: #000; }
+
+/* --- Layout --------------------------------------------------------------- */
+
+.wrap  { max-width: var(--measure); margin-inline: auto; }
+.prose { max-width: var(--measure); margin-inline: auto; }
+
+/* Let a figure escape the prose column and run wider. */
+.breakout {
+  width: min(var(--measure-wide), 100vw - 2rem);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+@media (min-width: 768px) {
+  .breakout { width: min(var(--measure-wide), 100vw - 6rem); }
+}
+
+/* --- Header / nav --------------------------------------------------------- */
+
+.site-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .site-header { flex-direction: row; align-items: center; }
+}
+
+.site-logo {
+  font-family: var(--font-serif);
+  font-size: 1.875rem;
+  line-height: 1.2;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.site-nav { display: flex; gap: 1rem; }
+
+.site-nav a,
+.site-footer a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 8px;
+  text-decoration-thickness: 1px;
+}
+.site-nav a:hover,
+.site-footer a:hover {
+  color: color-mix(in srgb, var(--fg) 70%, transparent);
+  text-decoration-thickness: 2px;
+}
+.site-nav a[aria-current="page"] { text-decoration-thickness: 2px; }
+
+.site-footer {
+  display: flex;
+  gap: 1rem;
+  max-width: var(--measure);
+  margin: 6rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* --- Article head --------------------------------------------------------- */
+
+.post-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 6vw, 3.75rem);
+  line-height: 1.1;
+  text-wrap: balance;
+  margin-bottom: 1.5rem;
+}
+
+/* Published / Authors / Paper key-value block */
+.post-meta {
+  display: grid;
+  gap: 0.125rem;
+  margin-bottom: 3rem;
+}
+@media (min-width: 768px) {
+  .post-meta { grid-template-columns: 120px 1fr; }
+}
+.post-meta dt { color: var(--fg); }
+.post-meta dd { margin: 0 0 0.5rem; }
+@media (min-width: 768px) { .post-meta dd { margin-bottom: 0; } }
+
+/* Collapsible author list — click "Authors" to expand the full roster. */
+.authors > summary {
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--fg-muted);
+}
+.authors > summary::-webkit-details-marker { display: none; }
+.authors > summary::after { content: " ▾"; color: var(--fg-muted); }
+.authors[open] > summary::after { content: " ▴"; }
+.authors p { margin-top: 0.5rem; color: var(--fg-muted); }
+
+/* --- Prose ---------------------------------------------------------------- */
+
+.prose p { margin-bottom: 1rem; }
+
+.prose .lead { font-size: 1rem; }
+
+.prose h2 {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 3rem 0 0.5rem;
+  scroll-margin-top: 2rem;
+}
+.prose h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 2rem 0 0.5rem;
+  scroll-margin-top: 2rem;
+}
+
+/* Hover-revealed # anchor, injected by blog.js */
+.heading-anchor {
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  text-align: center;
+  color: var(--link);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+h2:hover .heading-anchor,
+h3:hover .heading-anchor,
+.heading-anchor:focus { opacity: 1; }
+@media (max-width: 900px) { .heading-anchor { display: none; } }
+
+.prose a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose a:hover { text-decoration-thickness: 2px; color: var(--fg); }
+
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+
+.prose ul, .prose ol { margin: 0 0 1rem 1.25rem; padding: 0; }
+.prose li { margin-bottom: 0.375rem; }
+.prose ul { list-style: square; }
+
+.prose hr { border: 0; border-top: 1px solid var(--rule); margin: 3rem 0; }
+
+.prose blockquote {
+  border-left: 2px solid var(--rule);
+  padding-left: 1rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: var(--fg-muted);
+}
+
+/* Serif inline run — for a wordmark, a symbol, a math-ish token. */
+.serif { font-family: var(--font-serif); }
+
+/* --- Tool explorer -------------------------------------------------------
+   Click a tool name, see what it does. Pure CSS: hidden radios drive both the
+   tab state and which panel shows, so it works with JS off and arrow keys
+   move between tools for free.
+   -------------------------------------------------------------------------- */
+
+.toolbox { margin: 2rem 0 2.5rem; }
+
+.toolbox > input {
+  position: absolute;
+  width: 1px; height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toolbox-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 0.875rem;
+}
+
+.toolbox-tabs label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.25rem;
+  background: var(--bg-sunken);
+  color: var(--fg-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.12s, border-color 0.12s;
+}
+.toolbox-tabs label:hover { color: var(--fg); border-color: var(--fg-muted); }
+
+.toolbox-panel { display: none; }
+.toolbox-panel > p { margin-bottom: 0.75rem; }
+.toolbox-panel .tool-role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 0.25rem;
+}
+.toolbox-panel .image-card { background: #0d0d0b; }
+.toolbox-panel pre { margin: 0; }
+
+/* Per-tool wiring: highlight the chosen tab, reveal the matching panel. */
+#tb-select:checked  ~ .toolbox-tabs label[for="tb-select"],
+#tb-render:checked  ~ .toolbox-tabs label[for="tb-render"],
+#tb-grid:checked    ~ .toolbox-tabs label[for="tb-grid"],
+#tb-critic:checked  ~ .toolbox-tabs label[for="tb-critic"],
+#tb-mat:checked     ~ .toolbox-tabs label[for="tb-mat"] {
+  background: var(--tag);
+  border-color: var(--tag);
+  color: var(--tag-fg);
+}
+#tb-select:focus-visible  ~ .toolbox-tabs label[for="tb-select"],
+#tb-render:focus-visible  ~ .toolbox-tabs label[for="tb-render"],
+#tb-grid:focus-visible    ~ .toolbox-tabs label[for="tb-grid"],
+#tb-critic:focus-visible  ~ .toolbox-tabs label[for="tb-critic"],
+#tb-mat:focus-visible     ~ .toolbox-tabs label[for="tb-mat"] {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+#tb-select:checked  ~ .toolbox-panels .tb-p-select,
+#tb-render:checked  ~ .toolbox-panels .tb-p-render,
+#tb-grid:checked    ~ .toolbox-panels .tb-p-grid,
+#tb-critic:checked  ~ .toolbox-panels .tb-p-critic,
+#tb-mat:checked     ~ .toolbox-panels .tb-p-mat {
+  display: block;
+}
+
+/* Highlighted sentence — the line you want a skimmer to stop on. Uses the
+   same yellow as the corner tag, so it reads as one accent across the site.
+   box-decoration-break keeps the padding intact when the run wraps lines. */
+.prose mark {
+  background: var(--tag);
+  color: var(--tag-fg);
+  padding: 0.1em 0.15em;
+  border-radius: 0.125rem;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* --- Media: videos, images, galleries -------------------------------------- */
+
+.media { margin: 2rem 0 2.5rem; }
+
+/* `.media` above resets margin-left, which would kill the centring in
+   `.breakout`. Restate it here, at higher specificity, so a figure marked
+   `class="media breakout"` stays centred on the text column. */
+.media.breakout {
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.media-grid { display: grid; gap: 0.5rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) {
+  .media-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .media-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .media-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .media-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* The white card that holds a video or image. */
+.video-card, .image-card {
+  position: relative;
+  background: var(--card);
+  border-radius: 0.375rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.video-card video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  cursor: pointer;
+}
+.video-card.ratio-4-3  video { aspect-ratio: 4 / 3; }
+.video-card.ratio-1-1  video { aspect-ratio: 1 / 1; }
+.video-card.ratio-9-16 video { aspect-ratio: 9 / 16; }
+.video-card.ratio-auto video { aspect-ratio: auto; }
+
+.image-card img { width: 100%; height: auto; }
+
+/* Yellow corner label, e.g. the prompt given to the model. */
+.tag {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  z-index: 2;
+  background: var(--tag);
+  color: var(--tag-fg);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+/* "Loading…" veil, removed by blog.js once the video can play. */
+.video-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.5);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+/* Fullscreen button, revealed on hover. */
+.video-fs {
+  position: absolute;
+  right: 0.375rem;
+  bottom: 0.375rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.video-card:hover .video-fs,
+.video-fs:focus-visible { opacity: 1; }
+.video-fs:hover { background: rgb(0 0 0 / 0.8); }
+
+/* Caption — italic mono, sits under the media. */
+figcaption, .caption {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--fg);
+  padding-inline: 0.5rem;
+  margin-top: 1rem;
+  line-height: 1.6;
+}
+
+/* Responsive YouTube / Vimeo embed. */
+.embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background: #000;
+  box-shadow: var(--shadow);
+}
+.embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* --- Callout / stats / code / table --------------------------------------- */
+
+.callout {
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  padding: 1rem;
+  margin: 2rem 0;
+}
+.callout > :last-child { margin-bottom: 0; }
+
+.stat-grid { display: grid; gap: 0.5rem; grid-template-columns: repeat(2, 1fr); margin: 2rem 0; }
+@media (min-width: 640px) { .stat-grid.cols-3 { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 640px) { .stat-grid.cols-4 { grid-template-columns: repeat(4, 1fr); } }
+
+.stat {
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  padding: 1rem;
+  text-align: center;
+}
+.stat .stat-value { font-family: var(--font-serif); font-size: 2rem; line-height: 1.2; }
+.stat .stat-label { color: var(--fg-muted); font-size: 12px; }
+
+pre {
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 0.375rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+code { font-family: var(--font-mono); font-size: 0.95em; }
+:not(pre) > code {
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 0.25rem;
+  padding: 0.05em 0.3em;
+}
+
+.table-scroll { overflow-x: auto; margin: 1.5rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { border-bottom: 1px solid var(--rule); padding: 0.5rem 0.75rem; text-align: left; }
+th { font-weight: 600; }
+
+/* Footnotes */
+.footnotes { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: 13px; color: var(--fg-muted); }
+.footnotes ol { margin-left: 1.25rem; }
+
+/* --- Post index ----------------------------------------------------------- */
+
+.post-list { list-style: none; margin: 0; padding: 0; }
+
+.post-list li { border-top: 1px solid var(--rule); }
+.post-list li:last-child { border-bottom: 1px solid var(--rule); }
+
+.post-list a {
+  display: grid;
+  gap: 0.25rem 1.5rem;
+  padding: 1.5rem 0.5rem;
+  text-decoration: none;
+  color: var(--fg);
+}
+@media (min-width: 768px) {
+  .post-list a { grid-template-columns: 140px 1fr; }
+}
+.post-list a:hover { background: var(--bg-sunken); }
+
+.post-list .post-date { color: var(--fg-muted); }
+.post-list .post-name {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.post-list a:hover .post-name { text-decoration: underline; text-underline-offset: 5px; }
+.post-list .post-blurb { color: var(--fg-muted); margin-top: 0.25rem; }
