@@ -292,15 +292,15 @@
     <div class="sec-head"><span class="sec-num">01</span>
       <div>
         <h2 class="sec-title">Look into a reconstruction</h2>
-        <p class="sec-lede">Live in the browser — orbit the scene, isolate groups, compare render against the real capture.</p>
+        <p class="sec-lede">Live in the browser — orbit the scene, isolate groups, compare render against the real capture, or <b>walk through it in first person</b>.</p>
       </div>
     </div>
     <div class="tabrow">
       <div class="tabs" id="tabs"></div>
-      <a class="openfull" id="frameOpen" href="https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/" target="_blank" rel="noopener">open full viewer ↗</a>
+      <a class="openfull" id="frameOpen" href="vr/Office-Elliott-QC.html" target="_blank" rel="noopener">open full viewer ↗</a>
     </div>
     <div class="frame reveal">
-      <iframe id="frameView" data-src="https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/?embed=1" title="Interactive reconstruction" loading="lazy" allow="fullscreen"></iframe>
+      <iframe id="frameView" data-src="vr/Office-Elliott-QC.html" title="Interactive walkthrough" loading="lazy" allow="fullscreen; pointer-lock"></iframe>
       <img class="poster" id="framePoster" src="gallery/studio-office.jpg" alt="" aria-hidden="true">
       <button class="veil" id="veil"><span>Click to explore this room</span></button>
     </div>
@@ -412,7 +412,7 @@
     <div class="sec-head"><span class="sec-num">04</span>
       <div>
         <h2 class="sec-title">Gallery</h2>
-        <p class="sec-lede">Every reconstruction, orbitable in the browser. Click a scene to open it.</p>
+        <p class="sec-lede">Every reconstruction, walkable in the browser. Click a scene to step inside.</p>
       </div>
     </div>
     <div class="grid" id="grid"></div>
@@ -460,7 +460,7 @@
 </footer>
 
 <script>
-const BASE = "https://litereality-viewer.huangzhening.workers.dev/recon/";
+const vrUrl = id => "vr/" + encodeURIComponent(id) + ".html";
 
 // gallery
 const SCENES = [
@@ -475,7 +475,7 @@ const SCENES = [
   ["Corridors-MIL-Zhening-QC", "The Library", "shelves · books", "library"],
 ];
 grid.innerHTML = SCENES.map(([id, name, tag, key]) => `
-  <a class="gcard" href="${BASE}${encodeURIComponent(id)}/">
+  <a class="gcard" href="${vrUrl(id)}">
     <img src="gallery/${key}.jpg?v=2" alt="${name} — real capture beside reconstruction" loading="lazy">
     <div class="gmeta"><div><div class="n">${name}</div><div class="t">${tag}</div></div><span class="go" aria-hidden="true">↗</span></div>
   </a>`).join("");
@@ -500,9 +500,9 @@ tabs.onclick = e => {
   const b = e.target.closest(".tab");
   if (!b) return;
   tabs.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
-  frameOpen.href = BASE + encodeURIComponent(b.dataset.id) + "/";
+  frameOpen.href = vrUrl(b.dataset.id);
   framePoster.src = `gallery/${b.dataset.poster}.jpg`;
-  if (!TOUCH) frameView.src = frameOpen.href + "?embed=1";  // embed=1 strips the viewer's chrome
+  if (!TOUCH) frameView.src = frameOpen.href;  // the VR walkthrough viewer
   veil.classList.remove("off");
 };
 

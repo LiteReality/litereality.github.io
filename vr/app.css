@@ -1,0 +1,152 @@
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{overflow:hidden;background:#0b0d0e;
+     font-family:system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+canvas.webgl{position:fixed;top:0;left:0;width:100%;height:100%;touch-action:none;display:block}
+
+/* ---- loading screen ---- */
+.loading-screen{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:#1a1c1f center/cover no-repeat;
+  transition:opacity .5s ease}
+.loading-screen::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.42)}
+.loading-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.loading-text{color:#fff;font-size:1.5rem;margin-bottom:1rem;font-weight:500;
+  text-shadow:0 2px 4px rgba(0,0,0,.35)}
+.loading-sub{color:rgba(255,255,255,.82);font-size:.85rem;margin-bottom:1.25rem;font-weight:400;
+  letter-spacing:.02em;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.progress-container{width:240px;height:30px;background:rgba(255,255,255,.2);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;
+  overflow:hidden;position:relative}
+.progress-bar{width:0%;height:100%;background:rgba(255,255,255,.9);border-radius:999px;
+  transition:width .3s ease}
+.progress-text{color:#fff;font-size:.875rem;position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-weight:300;text-shadow:0 1px 2px rgba(0,0,0,.3);
+  pointer-events:none}
+
+/* ---- mode switcher ---- */
+.control-panel{position:fixed;top:20px;left:20px;background:rgba(255,255,255,.9);
+  padding:20px 30px;border-radius:30px;display:flex;flex-direction:column;gap:10px;z-index:1000;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);-webkit-tap-highlight-color:transparent;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.panel-title{font-size:13px;font-weight:600;color:#000;line-height:1.25;max-width:150px}
+.panel-title span{display:block;font-weight:400;font-size:11px;color:#6b7280;margin-top:2px}
+.mode-buttons{display:flex;flex-direction:column;gap:12px}
+.mode-button{padding:8px 16px;border:2px solid #000;border-radius:20px;background:#fff;color:#000;
+  cursor:pointer;font-family:inherit;font-size:14px;transition:all .2s ease;user-select:none;
+  -webkit-user-select:none;width:120px;text-align:center;touch-action:manipulation}
+.mode-button:hover:not(:disabled){background:#f0f0f0}
+.mode-button.active{background:#000!important;color:#fff!important}
+.mode-button:disabled{opacity:.5;cursor:not-allowed;pointer-events:none}
+@media (hover:none){
+  .mode-button:active:not(:disabled){background:#f0f0f0}
+  .mode-button.active:active{background:#000!important;color:#fff!important}
+}
+
+/* ---- hint pill ---- */
+.fps-info{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.9);
+  padding:10px 20px;border-radius:20px;font-size:14px;z-index:1000;color:#000;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);pointer-events:none;opacity:0;transition:opacity .3s ease;
+  white-space:nowrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.crosshair{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;
+  background:rgba(255,255,255,.85);border-radius:50%;pointer-events:none;z-index:1000;
+  box-shadow:0 0 4px rgba(0,0,0,.5);opacity:0;transition:opacity .3s ease}
+@media (max-width:768px){.crosshair{width:4px;height:4px}}
+
+/* ---- banana launcher ---- */
+.banana-counter{position:fixed;top:20px;right:20px;display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.9);padding:8px 16px;border-radius:20px;font-size:14px;z-index:1000;
+  color:#000;box-shadow:0 2px 10px rgba(0,0,0,.1);opacity:0;transition:opacity .3s ease;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;user-select:none}
+.banana-counter.on{opacity:1}
+.banana-counter .banana-icon{font-size:16px;line-height:1}
+.banana-counter .count{font-variant-numeric:tabular-nums;min-width:2ch;text-align:right}
+.banana-counter:hover{background:#fff}
+.banana-btn{position:fixed;right:24px;bottom:96px;width:64px;height:64px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.5);z-index:1000;display:none;
+  align-items:center;justify-content:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 2px 10px rgba(0,0,0,.2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.banana-btn.on{display:flex}
+@media (max-width:768px){.banana-counter{top:16px;right:16px;padding:7px 13px;font-size:13px}}
+
+/* ---- corner links ---- */
+.corner-link{position:fixed;bottom:16px;right:16px;display:flex;align-items:center;gap:4px;
+  padding:8px 21px;border-radius:20px;font-size:14px;color:#000;text-decoration:none;z-index:1000;
+  background:rgba(255,255,255,.9);box-shadow:0 2px 10px rgba(0,0,0,.1);transition:all .3s ease;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.corner-link:hover{background:#fff;color:#111827}
+.corner-link span{font-weight:600}
+.back-link{position:fixed;bottom:16px;left:16px;right:auto}
+/* ---- objects panel (orbit only): hide / isolate parts, reveal structure ---- */
+.objects-panel{position:fixed;top:20px;right:20px;width:232px;max-height:calc(100% - 96px);
+  display:flex;flex-direction:column;background:rgba(255,255,255,.9);border-radius:20px;z-index:1000;
+  box-shadow:0 2px 10px rgba(0,0,0,.1);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  overflow:hidden;font-size:13px;color:#0b0d0e}
+.objects-panel[hidden]{display:none}
+.op-head{display:flex;align-items:center;gap:6px;padding:14px 18px 10px;cursor:pointer;user-select:none}
+.op-head b{font-size:14px} .op-count{color:#6b7280;font-size:12px}
+.op-toggle{margin-left:auto;color:#6b7280;font-size:11px;transition:transform .2s}
+.objects-panel.collapsed .op-toggle{transform:rotate(-90deg)}
+.objects-panel.collapsed .op-actions,.objects-panel.collapsed .op-body{display:none}
+.op-actions{display:flex;gap:6px;padding:0 14px 10px}
+.op-actions button{flex:1;border:1.5px solid #0b0d0e;border-radius:14px;background:#fff;color:#0b0d0e;
+  font:600 11px system-ui;padding:5px 0;cursor:pointer;transition:all .15s}
+.op-actions button:hover{background:#f0f0f0}
+.op-actions button.on{background:#0b0d0e;color:#fff}
+.op-body{overflow-y:auto;padding:2px 8px 12px}
+.op-grp{display:flex;align-items:center;gap:7px;padding:10px 8px 4px;cursor:pointer;user-select:none}
+.op-car{color:#9098a3;font-size:9px;width:9px;flex:0 0 auto;transition:transform .15s}
+.op-grp.collapsed .op-car{transform:rotate(-90deg)}
+.op-gname{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px}
+.op-gct{color:#b3b9c2;font-size:10px;font-variant-numeric:tabular-nums}
+.op-geye{margin-left:auto;color:#9098a3;font-size:13px;padding:0 2px}
+.op-grp.ghidden .op-gname{color:#b3b9c2}
+.op-row{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 16px;border-radius:10px;cursor:pointer}
+.op-row:hover{background:rgba(0,0,0,.05)}
+.op-row.off{opacity:.4}
+.op-row.iso{background:rgba(11,13,14,.08);outline:1.5px solid rgba(11,13,14,.22)}
+.op-sw{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.op-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.op-ct{color:#9098a3;font-size:11px;font-variant-numeric:tabular-nums} .op-eye{color:#9098a3;font-size:13px;padding:0 1px}
+
+/* ---- camera views strip (orbit only), top-centre ---- */
+.cam-strip{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;
+  align-items:center;gap:10px;max-width:min(70vw,720px);padding:8px 14px;border-radius:20px;
+  background:rgba(255,255,255,.9);box-shadow:0 2px 10px rgba(0,0,0,.1);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px)}
+.cam-strip[hidden]{display:none}
+.cam-strip-label{font-size:11px;font-weight:600;color:#6b7280;white-space:nowrap;flex:0 0 auto}
+.cam-strip-rail{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.cam-strip-rail::-webkit-scrollbar{display:none}
+.cam-chip{flex:0 0 auto;position:relative;width:66px;height:44px;border-radius:9px;overflow:hidden;
+  cursor:pointer;border:2px solid transparent;background:#d7dcdd center/cover no-repeat;transition:border-color .15s}
+.cam-chip:hover{border-color:#9aa7b0}
+.cam-chip.active{border-color:#0b0d0e}
+.cam-chip span{position:absolute;left:0;right:0;bottom:0;font-size:9px;font-weight:600;color:#fff;
+  text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.6));padding:5px 0 1px}
+
+/* ---- render vs real side-by-side, bottom-centre; click to enlarge ---- */
+.cmp-card{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1001;
+  width:clamp(320px,46vw,600px);background:rgba(255,255,255,.94);border-radius:16px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.cmp-card[hidden]{display:none}
+.cmp-img{display:block;width:100%;height:auto;max-height:50vh;object-fit:contain;background:#111;cursor:zoom-in}
+.cmp-bar{display:flex;align-items:center;gap:6px;padding:8px 10px}
+.cmp-bar button{border:0;background:#eef0f2;color:#0b0d0e;border-radius:9px;width:30px;height:28px;
+  cursor:pointer;font-size:12px;transition:background .15s}
+.cmp-bar button:hover{background:#e0e3e6}
+.cmp-cap{flex:1;text-align:center;font-size:12px;font-weight:600;color:#374151}
+.cmp-lightbox{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.85);cursor:zoom-out;padding:24px}
+.cmp-lightbox[hidden]{display:none}
+.cmp-lightbox img{max-width:96vw;max-height:92vh;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+
+@media (max-width:768px){
+  .control-panel{transform:scale(.75);transform-origin:top left;top:10px;left:10px}
+  .corner-link{transform:scale(.85);transform-origin:bottom right}
+  .back-link{transform-origin:bottom left}
+  .fps-info{font-size:12px;padding:8px 14px}
+  .objects-panel{transform:scale(.82);transform-origin:top right;width:214px}
+  .cam-strip{max-width:82vw;top:12px;padding:6px 10px}
+  .cmp-card{width:min(82vw,320px)}
+}
