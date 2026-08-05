@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#bcd2d3">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>LiteReality — Scenes</title>
+<meta name="description" content="Walkable three.js reconstructions produced by the LiteReality authoring pipeline.">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:#bcd2d3;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+     -webkit-font-smoothing:antialiased;color:#0b0d0e;
+     background-image:radial-gradient(120% 90% at 50% -10%,#d9e6e6 0%,#bcd2d3 55%,#a9c2c4 100%);
+     background-attachment:fixed}
+.wrap{max-width:1080px;margin:0 auto;padding:14vh 24px 80px}
+h1{font-size:clamp(30px,5vw,46px);font-weight:600;letter-spacing:-.02em;margin:0 0 10px}
+.lede{font-size:16px;line-height:1.6;color:#3d4b4d;max-width:56ch;margin:0 0 44px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.card{display:block;text-decoration:none;color:inherit;background:rgba(255,255,255,.9);
+      border-radius:30px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.1);
+      transition:transform .3s ease,box-shadow .3s ease;backdrop-filter:blur(6px)}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.16)}
+.shot{aspect-ratio:4/3;background:#8fa8aa center/cover no-repeat;display:block}
+.meta{padding:20px 26px 24px}
+.meta b{display:block;font-size:18px;font-weight:600;margin-bottom:4px}
+.meta small{display:block;color:#6b7280;font-size:13px;line-height:1.5}
+.pill{display:inline-block;margin-top:14px;padding:7px 16px;border:2px solid #000;border-radius:20px;
+      font-size:13px;font-weight:500}
+.card:hover .pill{background:#000;color:#fff}
+footer{margin-top:56px;font-size:13px;color:#516062}
+footer a{color:inherit}
+</style></head>
+<body><div class="wrap">
+<h1>LiteReality scenes</h1>
+<p class="lede">Rooms reconstructed from a phone scan by the agentic authoring pipeline, exported to
+glTF and made walkable in the browser. Pick a scene, then switch between orbit, point-and-go and
+first-person walk.</p>
+<div class="grid"><a class="card" href="Airbnb-Cam-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Airbnb-Cam-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>Airbnb Cam</b><small>Living space, seating, windows</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="Airbnb-Room-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Airbnb-Room-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>Airbnb Room</b><small>Bedroom, storage, window</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="Corridors-MIL-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Corridors-MIL-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>Corridors MIL</b><small>Corridor run with doors</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="MIL-Meeting-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/MIL-Meeting-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>MIL Meeting</b><small>Long conference table, swing + double-leaf doors, blinds</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="Office-Elliott-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/thumb.jpg')"></span><span class="meta"><b>Office Elliott</b><small>Desks, sliding drawer, glazed window, entry door</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="PSi_2_meeting-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/PSi_2_meeting-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>PSi 2 meeting</b><small>Meeting room, table, screen</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="Psi_2_seminar-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Psi_2_seminar-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>Psi 2 seminar</b><small>Seminar room, rows of seating</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="fallside-kitchen-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/fallside-kitchen-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>fallside kitchen</b><small>Cupboards, drawers, fridge, bin lid</small><span class="pill">Open scene →</span></span></a>
+<a class="card" href="fallside-office-Zhening-QC.html"><span class="shot" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/fallside-office-Zhening-QC/thumb.jpg')"></span><span class="meta"><b>fallside office</b><small>Meeting desks and chairs, door</small><span class="pill">Open scene →</span></span></a></div>
+<footer>9 scenes · three.js r168 · Draco glTF streamed from R2 · <a href="https://litereality-viewer.huangzhening.workers.dev/recon/">QC dashboard</a></footer>
+</div></body></html>

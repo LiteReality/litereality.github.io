@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#bcd2d3">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Corridors MIL — LiteReality</title>
+<meta name="description" content="Walkable reconstruction of Corridors MIL, built by the LiteReality pipeline.">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<div class="loading-screen" style="background-image:url('https://litereality-viewer.huangzhening.workers.dev/recon/Corridors-MIL-Zhening-QC/thumb.jpg')">
+  <div class="loading-inner">
+    <div class="loading-text">Loading Scene…</div>
+    <div class="loading-sub">Corridors MIL</div>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+      <div class="progress-text">0%</div>
+    </div>
+  </div>
+</div>
+
+<canvas class="webgl"></canvas>
+
+<div class="control-panel">
+  <div class="panel-title">Corridors MIL<span>Corridor run with doors</span></div>
+  <div class="mode-buttons"></div>
+</div>
+
+<div class="fps-info"></div>
+<div class="crosshair"></div>
+
+<div class="banana-counter" id="bananaCounter" title="Click to clear every banana">
+  <span class="banana-icon">&#127820;</span><span class="count">0</span>
+</div>
+<button class="banana-btn" id="bananaBtn" title="Throw a banana" aria-label="Throw a banana">
+  <span style="font-size:32px;transform:rotate(-45deg);line-height:1">&#127820;</span>
+</button>
+
+<div class="cam-strip" id="camStrip" hidden>
+  <span class="cam-strip-label">Camera views</span>
+  <div class="cam-strip-rail" id="camRail"></div>
+</div>
+
+<div class="cmp-card" id="cmpCard" hidden>
+  <img class="cmp-img" id="cmpImg" alt="render vs real comparison" title="Click to enlarge">
+  <div class="cmp-bar">
+    <button id="cmpPrev" title="Previous view">◀</button>
+    <span class="cmp-cap" id="cmpCap"></span>
+    <button id="cmpNext" title="Next view">▶</button>
+    <button id="cmpClose" title="Back to orbit">✕</button>
+  </div>
+</div>
+
+<div class="cmp-lightbox" id="cmpLightbox" hidden><img id="cmpLightImg" alt="render vs real comparison"></div>
+
+<div class="objects-panel" id="objPanel" hidden>
+  <div class="op-head" id="opHead"><b>Objects</b><span class="op-count" id="opCount"></span><span class="op-toggle">▾</span></div>
+  <div class="op-actions">
+    <button id="opReset" title="Back to the dollhouse view">Reset</button>
+    <button id="opWire" title="Show the reconstructed mesh as wireframe">Wireframe</button>
+  </div>
+  <div class="op-body" id="opBody"></div>
+</div>
+
+<a class="corner-link back-link" href="index.html">← all scenes</a>
+<a class="corner-link" href="https://github.com/LiteReality/LiteReality-Agent" target="_blank"
+   rel="noopener noreferrer">built with <span>LiteReality-Agent</span></a>
+
+<script>window.SCENE = {"url": "https://litereality-viewer.huangzhening.workers.dev/recon/Corridors-MIL-Zhening-QC/room.glb", "cloud": "https://litereality-viewer.huangzhening.workers.dev/recon/Corridors-MIL-Zhening-QC/points.ply", "label": "Corridors MIL", "cameras": []};</script>
+<script type="importmap">{ "imports": {
+  "three": "https://litereality-viewer.huangzhening.workers.dev/vendor/three@0.168.0/build/three.module.js",
+  "three/addons/": "https://litereality-viewer.huangzhening.workers.dev/vendor/three@0.168.0/examples/jsm/"
+}}</script>
+<script type="module" src="app.js"></script>
+</body></html>
