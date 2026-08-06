@@ -509,6 +509,130 @@ th { font-weight: 600; }
 .footnotes { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); font-size: 13px; color: var(--fg-muted); }
 .footnotes ol { margin-left: 1.25rem; }
 
+/* --- Bibliography / citation ---------------------------------------------- */
+
+.prose ol.bib { margin-left: 1.5rem; font-size: 13px; }
+.prose ol.bib li { margin-bottom: 0.75rem; padding-left: 0.25rem; }
+.prose ol.bib .bib-authors { color: var(--fg-muted); }
+.prose ol.bib .bib-title { font-style: italic; }
+
+/* The BibTeX block, with a copy button in its top-right corner. */
+.cite-block { position: relative; }
+.cite-block pre { white-space: pre; }
+
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.25rem;
+  background: var(--bg);
+  color: var(--fg-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, color 0.12s ease;
+}
+.cite-block:hover .copy-btn,
+.copy-btn:focus-visible { opacity: 1; }
+.copy-btn:hover { color: var(--fg); border-color: var(--fg-muted); }
+@media (hover: none) { .copy-btn { opacity: 1; } }
+
+/* --- Lightbox: click a figure to see it full size -------------------------- */
+
+.image-card img.zoomable { cursor: zoom-in; }
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  background: rgb(8 8 6 / 0.97);
+  animation: lb-in 0.14s ease-out;
+}
+.lightbox[hidden] { display: none; }
+@keyframes lb-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lightbox { animation: none; } }
+
+/* Scroll container — becomes scrollable once the image is zoomed to 1:1. */
+/* Side padding keeps the image clear of the prev/next buttons. */
+.lb-viewport {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+  padding: 3.25rem 1rem 0.5rem;
+}
+@media (min-width: 640px) {
+  .lb-viewport { padding: 3.25rem 3.75rem 0.5rem; }
+}
+.lb-viewport.is-zoomed { overflow: auto; }
+
+/* margin:auto (not align-items) so an overflowing image stays fully
+   reachable when the viewport scrolls. */
+/* blog.js sets an explicit width/height: fit to the screen, but never past
+   2x for a small figure, which would only look soft. */
+.lb-viewport img {
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  background: #0d0d0b;
+}
+.lb-viewport.can-zoom img { cursor: zoom-in; }
+.lb-viewport.is-zoomed img {
+  max-width: none;
+  max-height: none;
+  cursor: zoom-out;
+}
+
+.lb-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.75rem 1rem 1rem;
+  color: #d8d5c9;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.6;
+}
+.lb-caption { flex: 1 1 auto; max-width: var(--measure-wide); }
+.lb-count { flex: 0 0 auto; font-style: normal; color: #8d8a7e; }
+
+.lb-btn {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 0.25rem;
+  background: rgb(255 255 255 / 0.08);
+  color: #f2f1ea;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.lb-btn:hover { background: rgb(255 255 255 / 0.2); }
+.lb-btn:focus-visible { outline: 2px solid var(--tag); outline-offset: 2px; }
+
+.lb-close { top: 0.75rem; right: 0.75rem; }
+.lb-prev  { top: 50%; left: 0.75rem; transform: translateY(-50%); }
+.lb-next  { top: 50%; right: 0.75rem; transform: translateY(-50%); }
+.lb-prev[hidden], .lb-next[hidden] { display: none; }
+
+/* Stop the page behind the overlay from scrolling. */
+html.lb-open, html.lb-open body { overflow: hidden; }
+
 /* --- Post index ----------------------------------------------------------- */
 
 .post-list { list-style: none; margin: 0; padding: 0; }
