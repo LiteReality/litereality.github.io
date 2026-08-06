@@ -975,7 +975,7 @@ let prev = performance.now();
       'border-radius:20px;z-index:1000;pointer-events:none;display:none;' +
       'box-shadow:0 2px 10px rgba(0,0,0,.12);backdrop-filter:blur(6px)';
     document.body.appendChild(d); return d; };
-  const lblL = mkLabel('Reconstruction', 25), lblR = mkLabel('Scan cloud', 75);
+  const lblL = mkLabel('Scan cloud', 25), lblR = mkLabel('Reconstruction', 75);
   const findMode = re => [...document.querySelectorAll('.mode-button')].find(b => re.test(b.textContent.trim()));
 
   // center reticle for EACH pane (both panes look down the same camera axis, so a mark at 25% / 75%
@@ -1012,7 +1012,7 @@ let prev = performance.now();
   }
   cmpBtn.addEventListener('click', async () => { await ensureCloud(); if (cloud) setSplit(!split); });
 
-  // split render hook — reconstruction LEFT, scan cloud RIGHT, one synced camera
+  // split render hook — scan cloud LEFT, reconstruction RIGHT, one synced camera
   window.__vrDraw = () => {
     if (!split || !cloud){
       renderer.setScissorTest(false);
@@ -1023,10 +1023,10 @@ let prev = performance.now();
     const w = innerWidth, h = innerHeight, lw = Math.floor(w / 2), rw = w - lw;
     const scv = cloud.visible, srv = roomRoot ? roomRoot.visible : true;
     renderer.setScissorTest(true);
-    cloud.visible = false; if (roomRoot) roomRoot.visible = true;                 // left = reconstruction
+    cloud.visible = true;  if (roomRoot) roomRoot.visible = false;                // left = scan cloud
     renderer.setViewport(0, 0, lw, h); renderer.setScissor(0, 0, lw, h);
     camera.aspect = lw / h; camera.updateProjectionMatrix(); renderer.render(scene, camera);
-    cloud.visible = true;  if (roomRoot) roomRoot.visible = false;                // right = scan cloud
+    cloud.visible = false; if (roomRoot) roomRoot.visible = true;                 // right = reconstruction
     renderer.setViewport(lw, 0, rw, h); renderer.setScissor(lw, 0, rw, h);
     camera.aspect = rw / h; camera.updateProjectionMatrix(); renderer.render(scene, camera);
     cloud.visible = scv; if (roomRoot) roomRoot.visible = srv;
