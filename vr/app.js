@@ -93,8 +93,6 @@ scene.add(marker);
 const ARTIC = { list: [] };
 const raycaster = new THREE.Raycaster();
 
-function clipLabel(name){ return name.replace(/_(swing|slide|open|move)$/i, '').replace(/_/g, ' '); }
-
 /* Tag each clip's target node (resolved the same way the mixer binds it, so names/uuids can't
    drift) with its entry. A ray-hit then walks up to the first tagged ancestor. */
 function findArticulated(obj){
@@ -290,7 +288,7 @@ function onRoomLoaded(gltf){
       const action = mixer.clipAction(clip);
       action.play(); action.paused = true; action.time = 0;
       const entry = { action, dur: clip.duration || 1, phase: 0, target: 0, moving: false,
-                      open: false, label: clipLabel(clip.name) };
+                      open: false };
       ARTIC.list.push(entry);
       for (const track of clip.tracks){
         const name = THREE.PropertyBinding.parseTrackName(track.name).nodeName;
@@ -578,7 +576,8 @@ function attachArticulation(){
     if (hit){
       cancelArticulationDemo();   // they've found it themselves — stop demonstrating and hand over
       suppressWalkUntil = performance.now() + 400;
-      showHint((hit.open ? 'Opening ' : 'Closing ') + hit.label);
+      // No announcement: the part swinging open is the feedback, and naming the direction in text
+      // only invites the two to disagree.
     }
   });
 }
