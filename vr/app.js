@@ -370,7 +370,7 @@ for (const m of MODE_LIST){
 const replayBtn = document.createElement('button');
 replayBtn.className = 'mode-button';
 replayBtn.textContent = 'Animate ⟳';
-replayBtn.title = 'Open and shut every door, drawer and blind again';
+replayBtn.title = 'Open every door, drawer and blind at once — or shut them all again';
 replayBtn.hidden = true;
 replayBtn.addEventListener('click', () => demoArticulation());
 panel.appendChild(replayBtn);
@@ -606,15 +606,25 @@ function demoArticulation(auto){
   cancelArticulationDemo();
   DEMO.on = true;
 
+  /* Nothing shuts itself. This used to sweep back closed a couple of seconds after opening, which
+     meant a door you had opened yourself could be shut again under you — and the click after that
+     correctly reported "Closing" at what now looked like a shut door. Parts stay where they were
+     put, so a click always does the obvious thing to what is actually on screen.
+
+     Direction: on load it opens. From the button it goes whichever way undoes the room's current
+     state, which makes that button an open-everything / shut-everything control. */
+  const open = auto ? true : !ARTIC.list.some(e => e.phase > 0.5);
+
   const step  = Math.min(140, 2000 / ARTIC.list.length);
   const sweep = ARTIC.list.length * step;
   const at = (ms, fn) => DEMO.timers.push(setTimeout(() => { if (DEMO.on) fn(); }, ms));
-  const drive = (e, open) => { e.open = open; e.target = open ? 1 : 0; e.moving = true; };
 
-  ARTIC.list.forEach((e, i) => at(400 + i * step, () => drive(e, true)));
-  ARTIC.list.forEach((e, i) => at(400 + sweep + 1600 + i * step, () => drive(e, false)));
-  at(500, () => showHint('Doors, drawers and blinds open — click any part to try it', true));
-  at(400 + sweep + 1600 + sweep + 900, () => {
+  ARTIC.list.forEach((e, i) => at(400 + i * step, () => {
+    e.open = open; e.target = open ? 1 : 0; e.moving = true;
+  }));
+  at(500, () => showHint(open ? 'Doors, drawers and blinds open — click any part to shut it again'
+                              : 'Shutting everything — click any part to open it again', true));
+  at(400 + sweep + 1400, () => {
     const m = MODE_LIST.find(x => x.id === mode);   // hand back whichever mode we actually landed in
     if (m) showHint(m.hint);
     cancelArticulationDemo();
