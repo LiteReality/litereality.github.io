@@ -105,16 +105,41 @@ function findArticulated(obj){
 }
 
 function toggleArticulation(e){
-  e.open = !e.open;
+  /* Decide from where the part physically is, not from a stored flag. The opening demo drives these
+     same fields and can be interrupted half way — by a click, or by its own cancel — which used to
+     leave `open` asserting a state the part had since left, so the next click reported "Closing" at
+     a shut door and did nothing visible. `phase` is the truth: 0 shut, 1 open. */
+  e.open   = e.phase < 0.5;
   e.target = e.open ? 1 : 0;
   e.moving = true;
 }
 
-function tryArticulate(cx, cy){
-  if (!ARTIC.list.length) return null;
-  raycaster.setFromCamera(new THREE.Vector2((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1), camera);
-  const hits = raycaster.intersectObjects(scene.children.filter(o => o !== marker), true);
-  for (const h of hits){
+/* Something hidden must not be clickable. three.js raycasts invisible objects regardless of their
+   `visible` flag, and Orbit hides the ceilings (and whatever the objects panel has switched off), so
+   without this a click can land on a part that is not on screen. */
+function hitIsVisible(o){
+  for (let n = o; n; n = n.parent) if (!n.visible) return false;
+  return true;
+}
+
+/* Screen point -> NDC for picking. While comparing, the camera draws through a half viewport, so
+   NDC taken against the whole window is off by half a pane and every click lands somewhere other
+   than where it was aimed; the compare code publishes __vrPick to map into the pane it actually drew
+   the reconstruction into. Null means the point picks nothing (the scan-cloud pane). */
+function pickNDC(cx, cy){
+  if (window.__vrPick) return window.__vrPick(cx, cy);
+  return new THREE.Vector2((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1);
+}
+
+function pickHits(ndc){
+  raycaster.setFromCamera(ndc, camera);
+  return raycaster.intersectObjects(scene.children.filter(o => o !== marker), true)
+                  .filter(h => hitIsVisible(h.object));
+}
+
+function tryArticulate(ndc){
+  if (!ARTIC.list.length || !ndc) return null;
+  for (const h of pickHits(ndc)){
     const e = findArticulated(h.object);
     if (e){ toggleArticulation(e); return e; }
   }
@@ -508,9 +533,9 @@ function look(dx, dy, inverted){
 }
 
 function castMarker(cx, cy){
-  const ndc = new THREE.Vector2((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1);
-  raycaster.setFromCamera(ndc, camera);
-  const hits = raycaster.intersectObjects(scene.children.filter(o => o !== marker), true);
+  const ndc = pickNDC(cx, cy);
+  if (!ndc){ marker.visible = false; canvas.style.cursor = ''; return; }   // over the scan-cloud pane
+  const hits = pickHits(ndc);
   if (!hits.length || camera.position.distanceTo(hits[0].point) < 1){ marker.visible = false; canvas.style.cursor = ''; return; }
   // Pointing at a door/drawer/window: swap the "walk here" disc for a click-to-open cursor, so it
   // is clear the click opens the part rather than walking you to it.
@@ -545,10 +570,11 @@ function attachArticulation(){
   canvas.addEventListener('pointerup', e => {
     if (busy) return;
     if (Math.hypot(e.clientX - tapX, e.clientY - tapY) > 6 || performance.now() - tapT > 500) return;
-    // when pointer-locked in Walk mode the cursor is pinned; aim from the crosshair at screen centre
-    const x = (mode === MODES.FPS && locked) ? innerWidth / 2 : e.clientX;
-    const y = (mode === MODES.FPS && locked) ? innerHeight / 2 : e.clientY;
-    const hit = tryArticulate(x, y);
+    // Pointer-locked in Walk mode the cursor is pinned, so aim down the middle. That is NDC (0,0) —
+    // the centre of whichever viewport was drawn, which stays correct inside a compare pane too.
+    const ndc = (mode === MODES.FPS && locked) ? new THREE.Vector2(0, 0)
+                                               : pickNDC(e.clientX, e.clientY);
+    const hit = tryArticulate(ndc);
     if (hit){
       cancelArticulationDemo();   // they've found it themselves — stop demonstrating and hand over
       suppressWalkUntil = performance.now() + 400;
@@ -1169,6 +1195,23 @@ let prev = performance.now();
     }
   }
   cmpBtn.addEventListener('click', async () => { await ensureCloud(); if (cloud) setSplit(!split); });
+
+  /* Map a screen point into the pane the reconstruction is drawn in — see pickNDC. The pane maths
+     mirrors __vrDraw exactly, except in CSS pixels measured from the top rather than GL pixels from
+     the bottom, so the stacked case measures the top pane and the reconstruction is what follows it.
+     A point over the scan cloud returns null: there is nothing there to walk to or open. */
+  window.__vrPick = (cx, cy) => {
+    const w = innerWidth, h = innerHeight;
+    if (!split || !cloud) return new THREE.Vector2((cx / w) * 2 - 1, -(cy / h) * 2 + 1);
+    if (stacked()){
+      const th = h - Math.floor(h / 2);          // top pane = scan cloud
+      return cy < th ? null
+                     : new THREE.Vector2((cx / w) * 2 - 1, -((cy - th) / (h - th)) * 2 + 1);
+    }
+    const lw = Math.floor(w / 2);                // left pane = scan cloud
+    return cx < lw ? null
+                   : new THREE.Vector2(((cx - lw) / (w - lw)) * 2 - 1, -(cy / h) * 2 + 1);
+  };
 
   /* split render hook — scan cloud then reconstruction, one synced camera. Landscape cuts it left |
      right; portrait cuts it top / bottom, scan above. Note the GL viewport origin is bottom-left, so
