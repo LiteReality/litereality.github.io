@@ -40,11 +40,17 @@ const sizes = { width: innerWidth, height: innerHeight };
 const camera = new THREE.PerspectiveCamera(FOV_ORBIT, sizes.width / sizes.height, 0.05, 500);
 scene.add(camera);
 
+/* Phones are fill-rate bound long before they are triangle bound: the room is only ~28k triangles,
+   so what costs frames is how many pixels get shaded. MSAA is the expensive kind of pixel on a
+   tile-based mobile GPU, and a modern iPhone reports devicePixelRatio 3 — capping at 2 still
+   supersamples a 390x844 screen to 1.3 Mpx a frame. Drop both on touch. */
+const PIXEL_CAP = IS_TOUCH ? 1.5 : 2;
+
 const renderer = new THREE.WebGLRenderer({
-  canvas, antialias: true, powerPreference: IS_TOUCH ? 'low-power' : 'high-performance',
+  canvas, antialias: !IS_TOUCH, powerPreference: IS_TOUCH ? 'low-power' : 'high-performance',
 });
 renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, PIXEL_CAP));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -60,7 +66,7 @@ addEventListener('resize', () => {
   sizes.width = innerWidth; sizes.height = innerHeight;
   camera.aspect = sizes.width / sizes.height; camera.updateProjectionMatrix();
   renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, PIXEL_CAP));
 });
 
 /* ------------------------------------------------------------------ point-and-go marker */
@@ -208,7 +214,37 @@ const draco = new DRACOLoader().setDecoderPath('https://litereality-viewer.huang
 const loader = new GLTFLoader().setDRACOLoader(draco);
 let mixer = null, roomRoot = null;
 
-loader.load(CFG.url, gltf => {
+/* Phones load the small build of the room — same nodes and same clips, but its textures are deduped
+   and cut to 512, which is ~2 MB on the wire against ~18 MB and ~0.2 GB of VRAM against ~3 GB. The
+   full build embeds hundreds of 1K JPEGs that a phone cannot hold decoded, so it thrashes.
+   See tools/build-mobile-glb.sh for how the variant is produced. */
+const MOBILE_RE = /room\.glb(\?.*)?$/;
+const useMobile = IS_TOUCH && MOBILE_RE.test(CFG.url);
+
+/* A scene that hasn't had its mobile build uploaded yet doesn't 404 — the worker answers unknown
+   paths with the site's index HTML, which fails to parse — so treat any failure of the mobile URL
+   as "not built yet" and quietly load the full one. */
+function loadRoom(url, canFallBack){
+  loader.load(url, onRoomLoaded, ev => {
+    if (ev.total) LS.set((ev.loaded / ev.total) * 0.92, 'Loading Model…');
+    // only a guess, for the case the worker sends no content-length; the mobile build is ~6-8x smaller
+    else LS.set(Math.min(0.9, ev.loaded / (canFallBack ? 2e6 : 12e6)), 'Loading Model…');
+  }, err => {
+    if (canFallBack){
+      console.warn('no mobile build for this scene yet, falling back to the full room', err);
+      loadRoom(CFG.url, false);
+      return;
+    }
+    console.error(err);
+    LS.txt.textContent = 'Could not load the scene';
+    LS.el.querySelector('.loading-sub').textContent =
+      'These pages stream the model over HTTP — open the site through serve.sh, not as a file:// path.';
+  });
+}
+
+loadRoom(useMobile ? CFG.url.replace(MOBILE_RE, 'room-mobile.glb$1') : CFG.url, useMobile);
+
+function onRoomLoaded(gltf){
   LS.set(0.95, 'Preparing Scene…');
   const root = gltf.scene;
   roomRoot = root;                      // the banana physics bounces off this, and nothing else
@@ -241,21 +277,33 @@ loader.load(CFG.url, gltf => {
      launcher sees it — doors keep priority, and you don't open a drawer *and* fire into it. */
   /* banana easter-egg not included in this template */
 
+  if (IS_TOUCH) cheapenGlass(root);
+
   camera.position.copy(VIEW.ORBIT.pos);
   camera.lookAt(VIEW.ORBIT.target);
   orbit.target.copy(VIEW.ORBIT.target);
   LS.set(1, 'Ready');
   LS.hide();
-  (window.__vrDefault ? window.__vrDefault() : setMode(MODES.POINTER));  // default: side-by-side compare
-}, ev => {
-  if (ev.total) LS.set((ev.loaded / ev.total) * 0.92, 'Loading Model…');
-  else LS.set(Math.min(0.9, ev.loaded / 12e6), 'Loading Model…');
-}, err => {
-  console.error(err);
-  LS.txt.textContent = 'Could not load the scene';
-  LS.el.querySelector('.loading-sub').textContent =
-    'These pages stream the model over HTTP — open the site through serve.sh, not as a file:// path.';
-});
+  // desktop opens in the side-by-side compare; touch has no compare, so it lands in Point and Go
+  (window.__vrDefault ? window.__vrDefault() : setMode(MODES.POINTER));
+}
+
+/* Real transmission costs a whole extra pass: while any transmissive material is on screen three.js
+   renders the entire scene a second time into a transmission target, every frame. The scenes buy
+   that for a handful of window panes, which is a poor trade on a phone — plain alpha reads close
+   enough at this size and halves the per-frame work. */
+function cheapenGlass(root){
+  root.traverse(o => {
+    if (!o.isMesh) return;
+    for (const m of (Array.isArray(o.material) ? o.material : [o.material])){
+      if (!m || !m.transmission) continue;
+      m.opacity      = Math.min(m.opacity, 1 - m.transmission * 0.75);
+      m.transmission = 0;
+      m.transparent  = true;
+      m.needsUpdate  = true;
+    }
+  });
+}
 
 /* ------------------------------------------------------------------ modes */
 const MODES = { ORBIT:'ORBIT', POINTER:'POINTER', FPS:'FPS' };
@@ -927,6 +975,13 @@ let prev = performance.now();
 (async () => {
   const CLOUD_URL = (window.SCENE && window.SCENE.cloud) || null;
   if (!CLOUD_URL) return;
+
+  /* Not on phones. Compare is the default view on desktop, so a phone was paying for all of it up
+     front: a ~5 MB scan cloud of ~195k points stored as float64 positions, held in memory alongside
+     the room, and a split view that renders the whole scene twice per frame. That was most of why
+     the viewer crawled on a phone. `?compare=1` forces it back on for testing. */
+  if (IS_TOUCH && new URLSearchParams(location.search).get('compare') !== '1') return;
+
   let PLYLoader;
   try { ({ PLYLoader } = await import('three/addons/loaders/PLYLoader.js')); }
   catch (e) { console.error('PLYLoader unavailable', e); return; }
@@ -938,9 +993,11 @@ let prev = performance.now();
   cmpBtn.title = 'Side by side: reconstruction | scan cloud, one synced camera';
   host.appendChild(cmpBtn);
 
-  // density (point size) — shown only while comparing; default reads solid ("dense points")
+  // density (point size) — shown only while comparing. Starts at max: the scan reads as a solid
+  // surface next to the reconstruction, which is the comparison worth seeing first. Drag down to
+  // thin the points out and look through the cloud.
   const dens = document.createElement('input');
-  dens.type = 'range'; dens.min = '1'; dens.max = '100'; dens.value = '40';
+  dens.type = 'range'; dens.min = '1'; dens.max = '100'; dens.value = '100';
   dens.title = 'Point size (density)';
   dens.style.cssText = 'width:120px;margin-top:8px;accent-color:#0b0d0e;display:none';
   host.appendChild(dens);
