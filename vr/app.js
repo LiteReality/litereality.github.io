@@ -287,10 +287,12 @@ function onRoomLoaded(gltf){
   orbit.target.copy(VIEW.ORBIT.target);
   LS.set(1, 'Ready');
   LS.hide();
-  // desktop opens in the side-by-side compare; touch has no compare, so it lands in Point and Go
-  (window.__vrDefault ? window.__vrDefault() : setMode(MODES.POINTER));
-  // after the mode is set, so its hint doesn't land on top of the demo's
-  demoArticulation();
+  // both default to Orbit; only the compare split differs between desktop and touch
+  (window.__vrDefault ? window.__vrDefault() : setMode(MODES.ORBIT));
+
+  // the room is in, so we finally know whether it has anything that moves
+  replayBtn.hidden = articNote.hidden = !ARTIC.list.length;
+  demoArticulation(true);   // after the mode is set, so its hint doesn't land on top of the demo's
 }
 
 /* Real transmission costs a whole extra pass: while any transmissive material is on screen three.js
@@ -335,6 +337,27 @@ for (const m of MODE_LIST){
   b.addEventListener('click', () => setMode(m.id));
   panel.appendChild(b);
 }
+
+/* Runs the opening sweep again on demand — the automatic one plays once, and you generally want a
+   second look. Deliberately carries no dataset.id: setMode and setButtons key the `active` state off
+   that, so this stays visually inert while still greying out with the rest during a mode change.
+   Starts hidden and is revealed on load only if the room actually has moving parts. */
+const replayBtn = document.createElement('button');
+replayBtn.className = 'mode-button';
+replayBtn.textContent = 'Animate ⟳';
+replayBtn.title = 'Open and shut every door, drawer and blind again';
+replayBtn.hidden = true;
+replayBtn.addEventListener('click', () => demoArticulation());
+panel.appendChild(replayBtn);
+
+/* The hint pill fades after a few seconds and the demo only plays once, so neither leaves anything
+   behind for someone who arrives at the room a minute later. This note stands. Revealed alongside
+   the replay button, and only for rooms that actually have moving parts. */
+const articNote = document.createElement('div');
+articNote.className = 'artic-note';
+articNote.textContent = 'Doors, drawers and blinds open — click any part of the room to try it.';
+articNote.hidden = true;
+panel.parentElement.appendChild(articNote);
 
 function showHint(text, sticky){
   clearTimeout(hintTimer);
@@ -551,8 +574,9 @@ function cancelArticulationDemo(){
   DEMO.timers.length = 0;
 }
 
-function demoArticulation(){
-  if (REDUCED || !ARTIC.list.length) return;   // reduced-motion asked for no unprompted movement
+function demoArticulation(auto){
+  if (!ARTIC.list.length) return;
+  if (auto && REDUCED) return;   // no *unprompted* motion under reduced-motion — the button still works
   cancelArticulationDemo();
   DEMO.on = true;
 
@@ -1025,12 +1049,6 @@ let prev = performance.now();
   const CLOUD_URL = (window.SCENE && window.SCENE.cloud) || null;
   if (!CLOUD_URL) return;
 
-  /* Not on phones. Compare is the default view on desktop, so a phone was paying for all of it up
-     front: a ~5 MB scan cloud of ~195k points stored as float64 positions, held in memory alongside
-     the room, and a split view that renders the whole scene twice per frame. That was most of why
-     the viewer crawled on a phone. `?compare=1` forces it back on for testing. */
-  if (IS_TOUCH && new URLSearchParams(location.search).get('compare') !== '1') return;
-
   let PLYLoader;
   try { ({ PLYLoader } = await import('three/addons/loaders/PLYLoader.js')); }
   catch (e) { console.error('PLYLoader unavailable', e); return; }
@@ -1074,30 +1092,63 @@ let prev = performance.now();
   }
   dens.addEventListener('input', () => { if (cloud) cloud.material.size = pointSize(); });
 
+  /* A phone held upright is the wrong shape to cut vertically — two ~195px columns show almost
+     nothing of a room. Stack the panes instead whenever the viewport is taller than it is wide, so
+     each pane keeps the full width. Everything below (labels, reticles, seam, the render hook) reads
+     this one predicate, and it is re-evaluated live so rotating the phone re-lays-out the split. */
+  const stacked = () => innerHeight > innerWidth;
+
   // pane labels for split
-  const mkLabel = (txt, leftPct) => { const d = document.createElement('div'); d.textContent = txt;
-    d.style.cssText = 'position:fixed;top:16px;left:' + leftPct + '%;transform:translateX(-50%);' +
+  const mkLabel = txt => { const d = document.createElement('div'); d.textContent = txt;
+    d.style.cssText = 'position:fixed;transform:translateX(-50%);' +
       'background:rgba(255,255,255,.9);color:#0b0d0e;font:600 12px system-ui;padding:6px 14px;' +
       'border-radius:20px;z-index:1000;pointer-events:none;display:none;' +
       'box-shadow:0 2px 10px rgba(0,0,0,.12);backdrop-filter:blur(6px)';
     document.body.appendChild(d); return d; };
-  const lblL = mkLabel('Scan cloud', 25), lblR = mkLabel('Reconstruction', 75);
+  const lblL = mkLabel('Scan cloud'), lblR = mkLabel('Reconstruction');
   const findMode = re => [...document.querySelectorAll('.mode-button')].find(b => re.test(b.textContent.trim()));
 
   // center reticle for EACH pane (both panes look down the same camera axis, so a mark at 25% / 75%
   // is the same world point in the reconstruction and the scan — an alignment aid + the walk aim
   // point, which the built-in crosshair can't show because it sits on the seam at 50%).
-  const mkMark = leftPct => { const d = document.createElement('div');
-    d.style.cssText = 'position:fixed;left:' + leftPct + '%;top:50%;width:14px;height:14px;' +
+  const mkMark = () => { const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;width:14px;height:14px;' +
       'margin:-7px 0 0 -7px;border-radius:50%;border:2px solid #fff;box-sizing:border-box;' +
       'box-shadow:0 0 0 1.5px rgba(0,0,0,.7),0 0 5px rgba(0,0,0,.5);z-index:1001;' +
       'pointer-events:none;display:none'; document.body.appendChild(d); return d; };
-  const markL = mkMark(25), markR = mkMark(75);
+  const markL = mkMark(), markR = mkMark();
   const divider = document.createElement('div');
-  divider.style.cssText = 'position:fixed;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;' +
+  divider.style.cssText = 'position:fixed;' +
     'background:rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(0,0,0,.4);z-index:1001;' +
     'pointer-events:none;display:none'; document.body.appendChild(divider);
   const appCross = document.querySelector('.crosshair');   // the built-in walk crosshair (at the seam)
+
+  /* Place the split's chrome for the current orientation. `L` is always the scan cloud and `R` the
+     reconstruction — side by side they are left/right, stacked they become top/bottom. Each label
+     sits just inside its own pane's leading edge, and each reticle at its pane's centre. */
+  function layoutSplitChrome(){
+    const v = stacked();
+    /* On a narrow screen the labels hug the right edge of their pane rather than its centre: the
+       control panel owns the top-left corner, and at 390px wide a centred label lands underneath it.
+       Wide enough and 25%/75% clears the panel comfortably, so centre them there. */
+    const tight = innerWidth < 900;
+    const place = (el, top, leftPct) => {
+      el.style.top = top;
+      if (tight){ el.style.left = 'auto';   el.style.right = '12px'; el.style.transform = 'none'; }
+      else      { el.style.left = leftPct;  el.style.right = 'auto'; el.style.transform = 'translateX(-50%)'; }
+    };
+    place(lblL, '16px', v ? '50%' : '25%');
+    place(lblR, v ? 'calc(50% + 16px)' : '16px', v ? '50%' : '75%');
+    markL.style.left = v ? '50%' : '25%';         markL.style.top = v ? '25%' : '50%';
+    markR.style.left = v ? '50%' : '75%';         markR.style.top = v ? '75%' : '50%';
+    Object.assign(divider.style, v
+      ? { left:'0',   right:'0',    top:'50%', bottom:'auto', width:'auto', height:'2px',
+          marginLeft:'0',    marginTop:'-1px' }
+      : { left:'50%', right:'auto', top:'0',   bottom:'0',    width:'2px',  height:'auto',
+          marginLeft:'-1px', marginTop:'0' });
+  }
+  layoutSplitChrome();
+  addEventListener('resize', () => { if (split) layoutSplitChrome(); });   // covers orientation change
 
   function setSplit(v){
     split = v;
@@ -1106,6 +1157,7 @@ let prev = performance.now();
     dens.style.display = split ? 'block' : 'none';
     const show = split ? 'block' : 'none';
     lblL.style.display = lblR.style.display = markL.style.display = markR.style.display = divider.style.display = show;
+    if (split) layoutSplitChrome();   // the phone may have been rotated since the last time it opened
     if (appCross) appCross.style.display = split ? 'none' : '';   // hide the seam crosshair while comparing
     if (split){ const o = findMode(/^Orbit$/); if (o) o.click(); }   // best as a synced dollhouse
     else {
@@ -1118,7 +1170,10 @@ let prev = performance.now();
   }
   cmpBtn.addEventListener('click', async () => { await ensureCloud(); if (cloud) setSplit(!split); });
 
-  // split render hook — scan cloud LEFT, reconstruction RIGHT, one synced camera
+  /* split render hook — scan cloud then reconstruction, one synced camera. Landscape cuts it left |
+     right; portrait cuts it top / bottom, scan above. Note the GL viewport origin is bottom-left, so
+     the *top* pane is the one with the raised y — the pane heights are floored the same way the
+     widths are, and the leftover pixel goes to the pane drawn first. */
   window.__vrDraw = () => {
     if (!split || !cloud){
       renderer.setScissorTest(false);
@@ -1126,23 +1181,38 @@ let prev = performance.now();
       camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
       renderer.render(scene, camera); return;
     }
-    const w = innerWidth, h = innerHeight, lw = Math.floor(w / 2), rw = w - lw;
+    const w = innerWidth, h = innerHeight;
     const scv = cloud.visible, srv = roomRoot ? roomRoot.visible : true;
+    const pane = (x, y, pw, ph, showCloud) => {
+      cloud.visible = showCloud;  if (roomRoot) roomRoot.visible = !showCloud;
+      renderer.setViewport(x, y, pw, ph); renderer.setScissor(x, y, pw, ph);
+      camera.aspect = pw / ph; camera.updateProjectionMatrix();
+      renderer.render(scene, camera);
+    };
     renderer.setScissorTest(true);
-    cloud.visible = true;  if (roomRoot) roomRoot.visible = false;                // left = scan cloud
-    renderer.setViewport(0, 0, lw, h); renderer.setScissor(0, 0, lw, h);
-    camera.aspect = lw / h; camera.updateProjectionMatrix(); renderer.render(scene, camera);
-    cloud.visible = false; if (roomRoot) roomRoot.visible = true;                 // right = reconstruction
-    renderer.setViewport(lw, 0, rw, h); renderer.setScissor(lw, 0, rw, h);
-    camera.aspect = rw / h; camera.updateProjectionMatrix(); renderer.render(scene, camera);
+    if (stacked()){
+      const bh = Math.floor(h / 2), th = h - bh;   // bottom half, then whatever is left on top
+      pane(0, bh, w, th, true);                    // top    = scan cloud
+      pane(0, 0,  w, bh, false);                   // bottom = reconstruction
+    } else {
+      const lw = Math.floor(w / 2), rw = w - lw;
+      pane(0,  0, lw, h, true);                    // left  = scan cloud
+      pane(lw, 0, rw, h, false);                   // right = reconstruction
+    }
     cloud.visible = scv; if (roomRoot) roomRoot.visible = srv;
     renderer.setScissorTest(false);
   };
 
-  // DEFAULT: open in the synced side-by-side, framed in Orbit so both rooms are visible at once.
-  // Orbit / Point-and-Go / Walk stay one click away and keep working while comparing. ?compare=0 opts out.
+  /* DEFAULT: Orbit everywhere — the dollhouse is the view that shows what was reconstructed, and on
+     a phone it is also the only mode that needs no instructions.
+
+     Desktop then opens straight into the synced side-by-side. A phone does not: the scan cloud is a
+     ~5 MB download and the split doubles the per-frame cost, which is too much to spend before the
+     viewer is even interactive. Compare is one tap away instead, and stacks itself in portrait.
+     ?compare=1 forces the split on anyway, ?compare=0 suppresses it. */
   window.__vrDefault = () => {
     const o = findMode(/^Orbit$/); if (o) o.click();               // activate orbit immediately (interactive)
-    if (new URLSearchParams(location.search).get('compare') !== '0') ensureCloud().then(() => setSplit(true));
+    const q = new URLSearchParams(location.search).get('compare');
+    if (q === '1' || (q !== '0' && !IS_TOUCH)) ensureCloud().then(() => setSplit(true));
   };
 })();
