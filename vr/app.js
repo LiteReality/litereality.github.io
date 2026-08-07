@@ -289,6 +289,8 @@ function onRoomLoaded(gltf){
   LS.hide();
   // desktop opens in the side-by-side compare; touch has no compare, so it lands in Point and Go
   (window.__vrDefault ? window.__vrDefault() : setMode(MODES.POINTER));
+  // after the mode is set, so its hint doesn't land on top of the demo's
+  demoArticulation();
 }
 
 /* Real transmission costs a whole extra pass: while any transmissive material is on screen three.js
@@ -524,7 +526,48 @@ function attachArticulation(){
     const x = (mode === MODES.FPS && locked) ? innerWidth / 2 : e.clientX;
     const y = (mode === MODES.FPS && locked) ? innerHeight / 2 : e.clientY;
     const hit = tryArticulate(x, y);
-    if (hit){ suppressWalkUntil = performance.now() + 400; showHint((hit.open ? 'Opening ' : 'Closing ') + hit.label); }
+    if (hit){
+      cancelArticulationDemo();   // they've found it themselves — stop demonstrating and hand over
+      suppressWalkUntil = performance.now() + 400;
+      showHint((hit.open ? 'Opening ' : 'Closing ') + hit.label);
+    }
+  });
+}
+
+/* On load, run every articulated part through its clip once so the moving parts announce themselves
+   instead of waiting to be found by a click. It drives the same target/moving fields the click
+   handler sets, so this is a demonstration of the real interaction, not a separate canned playback —
+   which is why a click at any point can take over mid-sweep.
+
+   Staggered, so it reads as a sweep through the room rather than everything twitching at once, and
+   the step shrinks as the part count grows (some scenes carry a dozen-odd blinds) to keep the whole
+   thing to a couple of seconds each way. Parts close again at the end: leaving every door, drawer
+   and blind hanging open is a poor first impression of a reconstruction. */
+const DEMO = { timers: [], on: false };
+
+function cancelArticulationDemo(){
+  DEMO.on = false;
+  for (const t of DEMO.timers) clearTimeout(t);
+  DEMO.timers.length = 0;
+}
+
+function demoArticulation(){
+  if (REDUCED || !ARTIC.list.length) return;   // reduced-motion asked for no unprompted movement
+  cancelArticulationDemo();
+  DEMO.on = true;
+
+  const step  = Math.min(140, 2000 / ARTIC.list.length);
+  const sweep = ARTIC.list.length * step;
+  const at = (ms, fn) => DEMO.timers.push(setTimeout(() => { if (DEMO.on) fn(); }, ms));
+  const drive = (e, open) => { e.open = open; e.target = open ? 1 : 0; e.moving = true; };
+
+  ARTIC.list.forEach((e, i) => at(400 + i * step, () => drive(e, true)));
+  ARTIC.list.forEach((e, i) => at(400 + sweep + 1600 + i * step, () => drive(e, false)));
+  at(500, () => showHint('Doors, drawers and blinds open — click any part to try it', true));
+  at(400 + sweep + 1600 + sweep + 900, () => {
+    const m = MODE_LIST.find(x => x.id === mode);   // hand back whichever mode we actually landed in
+    if (m) showHint(m.hint);
+    cancelArticulationDemo();
   });
 }
 
