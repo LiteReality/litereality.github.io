@@ -58,14 +58,15 @@
   .rail-nav a{display:flex;align-items:center;justify-content:flex-end;gap:11px;padding:3px 0}
   .rail-nav a:hover{text-decoration:none}
   .rail-nav .lbl{font-size:12.5px;font-weight:500;color:var(--ink-3);white-space:nowrap;
-    opacity:0;transform:translateX(8px);transition:opacity .25s ease,transform .25s ease,color .2s}
-  .rail-nav:hover .lbl{opacity:1;transform:none}
+    transition:color .2s}
   .rail-nav a:hover .lbl,.rail-nav a.on .lbl{color:var(--ink)}
   .rail-nav .dash{width:16px;height:2px;border-radius:2px;background:var(--line-2);
     flex:0 0 auto;transition:width .25s cubic-bezier(.4,0,.2,1),background .2s}
   .rail-nav a:hover .dash{background:var(--blue);width:28px}
   .rail-nav a.on .dash{width:34px;background:var(--ink)}
-  @media(max-width:1180px){.rail-nav{display:none}}
+  /* Labels are always on now, so the rail needs ~131px of gutter rather than the 42px a bare
+     dash took. Hide it until the window can spare that without squeezing the content column. */
+  @media(max-width:1379px){.rail-nav{display:none}}
 
   /* ---- shared section frame ---- */
   section{padding:88px 0;scroll-margin-top:58px}
@@ -118,6 +119,10 @@
      iframe's own edges, so at the 1060px text width they eat most of the room; the extra
      width buys the scene clear space between them. */
   #viewer .wrap{max-width:1500px}
+  /* ...but the rail-nav is fixed 26px off the right edge and, with its labels always shown,
+     reaches ~131px in. Once the rail appears, hold the viewer clear of it (160px a side) so
+     the labels never land on the canvas. Below that the rail is hidden and the viewer is free. */
+  @media(min-width:1380px){#viewer .wrap{max-width:min(1500px,100vw - 320px)}}
   .tabrow{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-bottom:14px}
   .tabs{display:flex;flex-wrap:wrap;gap:8px}
   .tab{font-family:var(--sans);font-size:13px;font-weight:500;padding:7px 15px;cursor:pointer;
