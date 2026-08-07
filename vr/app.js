@@ -93,6 +93,13 @@ scene.add(marker);
 const ARTIC = { list: [] };
 const raycaster = new THREE.Raycaster();
 
+/* The room's own door, as against a cupboard's. Every scene names its entrance Door_Leaf* —
+   Door_Leaf_swing, or Door_Leaf_Left/Right_swing for a double — while furniture doors arrive as
+   Door_1_swing, Door_Left_swing, Door_Main_L_swing and so on. Checked against all nine rooms: this
+   finds the entrance in every one of them, and passes over the kitchen's seven cupboard doors and
+   the bedroom's wardrobe. Keep it in step if the pipeline's clip naming changes. */
+const DOOR_RE = /(^|[_.])door_leaf/i;
+
 /* Tag each clip's target node (resolved the same way the mixer binds it, so names/uuids can't
    drift) with its entry. A ray-hit then walks up to the first tagged ancestor. */
 function findArticulated(obj){
@@ -288,7 +295,7 @@ function onRoomLoaded(gltf){
       const action = mixer.clipAction(clip);
       action.play(); action.paused = true; action.time = 0;
       const entry = { action, dur: clip.duration || 1, phase: 0, target: 0, moving: false,
-                      open: false };
+                      open: false, isDoor: DOOR_RE.test(clip.name || '') };
       ARTIC.list.push(entry);
       for (const track of clip.tracks){
         const name = THREE.PropertyBinding.parseTrackName(track.name).nodeName;
@@ -613,17 +620,29 @@ function demoArticulation(auto){
 
      Direction: on load it opens. From the button it goes whichever way undoes the room's current
      state, which makes that button an open-everything / shut-everything control. */
-  const open = auto ? true : !ARTIC.list.some(e => e.phase > 0.5);
+  /* On load only the doors swing, so a room opens showing a way in rather than every cupboard, sash
+     and blind hanging open at once. The button works the whole room, which is how the rest of the
+     moving parts get shown. */
+  const list = auto ? ARTIC.list.filter(e => e.isDoor) : ARTIC.list;
+  if (!list.length) return;
 
-  const step  = Math.min(140, 2000 / ARTIC.list.length);
-  const sweep = ARTIC.list.length * step;
+  /* Direction: if anything is still shut, open it. Only once the room is fully open does the button
+     shut it again. Counting a majority instead gets rooms like the corridor wrong — it opens with
+     three of its six parts being doors, so an even split reads as "mostly open" and the first press
+     shuts the doors you were just shown, rather than opening the rest. */
+  const open = auto ? true : list.some(e => e.phase < 0.5);
+
+  const step  = Math.min(140, 2000 / list.length);
+  const sweep = list.length * step;
   const at = (ms, fn) => DEMO.timers.push(setTimeout(() => { if (DEMO.on) fn(); }, ms));
 
-  ARTIC.list.forEach((e, i) => at(400 + i * step, () => {
+  list.forEach((e, i) => at(400 + i * step, () => {
     e.open = open; e.target = open ? 1 : 0; e.moving = true;
   }));
-  at(500, () => showHint(open ? 'Doors, drawers and blinds open — click any part to shut it again'
-                              : 'Shutting everything — click any part to open it again', true));
+  at(500, () => showHint(
+    auto  ? 'Click a door, drawer, window or blind to open it'
+    : open ? 'Opening everything — click any part to shut it again'
+           : 'Shutting everything — click any part to open it again', true));
   at(400 + sweep + 1400, () => {
     const m = MODE_LIST.find(x => x.id === mode);   // hand back whichever mode we actually landed in
     if (m) showHint(m.hint);
