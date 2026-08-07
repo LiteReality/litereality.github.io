@@ -34,7 +34,8 @@ canvas.webgl{position:fixed;top:0;left:0;width:100%;height:100%;touch-action:non
 .mode-buttons{display:flex;flex-direction:column;gap:12px}
 /* Standing note about the moving parts — matches the panel subtitle, since it is the same kind of
    thing: something about this room you would otherwise have to discover by accident. */
-.artic-note{max-width:150px;font-size:11px;line-height:1.35;color:#6b7280}
+.artic-note{max-width:150px;font-size:11px;line-height:1.4;color:#374151;
+  padding-top:10px;border-top:1px solid rgba(0,0,0,.08)}
 .mode-button{padding:8px 16px;border:2px solid #000;border-radius:20px;background:#fff;color:#000;
   cursor:pointer;font-family:inherit;font-size:14px;transition:all .2s ease;user-select:none;
   -webkit-user-select:none;width:120px;text-align:center;touch-action:manipulation}

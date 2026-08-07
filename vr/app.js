@@ -378,7 +378,8 @@ panel.appendChild(replayBtn);
    the replay button, and only for rooms that actually have moving parts. */
 const articNote = document.createElement('div');
 articNote.className = 'artic-note';
-articNote.textContent = 'Doors, drawers and blinds open — click any part of the room to try it.';
+articNote.textContent =
+  'This room has articulated parts. Click a door, drawer, window or blind to open it.';
 articNote.hidden = true;
 panel.parentElement.appendChild(articNote);
 
