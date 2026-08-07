@@ -53,7 +53,10 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(devicePixelRatio, PIXEL_CAP));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0;
+/* Scenes are lit entirely by the environment map plus the emissive `daylight` panels baked into the
+   room, so exposure is the one dial that dims every scene evenly. Held a little under 1 — the rooms
+   read blown out at 1.0, and the highlights on white walls and laminate keep more shape down here. */
+renderer.toneMappingExposure = 0.85;
 renderer.setClearColor('#bcd2d3');
 
 const pmrem = new THREE.PMREMGenerator(renderer);
@@ -308,9 +311,12 @@ function cheapenGlass(root){
 /* ------------------------------------------------------------------ modes */
 const MODES = { ORBIT:'ORBIT', POINTER:'POINTER', FPS:'FPS' };
 const MODE_LIST = [
-  { id: MODES.ORBIT,   label: 'Orbit',        hint: 'Drag to orbit · scroll to zoom · right-drag to pan' },
-  { id: MODES.POINTER, label: 'Point and Go', hint: 'Click the floor to walk · click a door or drawer to open it · drag to look' },
-  { id: MODES.FPS,     label: 'Walk',         hint: 'WASD to Move | SPACE Jump | SHIFT Duck | ESC to Exit' },
+  /* Articulation is bound on the canvas in every mode (see attachArticulation), so every hint says
+     so — it was only mentioned in Point and Go before, and the moving parts are the thing people
+     most need telling about. Doors, drawers, window sashes and blinds all carry a baked clip. */
+  { id: MODES.ORBIT,   label: 'Orbit',        hint: 'Drag to orbit · scroll to zoom · right-drag to pan · click a door, drawer or blind to open it' },
+  { id: MODES.POINTER, label: 'Point and Go', hint: 'Click the floor to walk · click a door, drawer or blind to open it · drag to look' },
+  { id: MODES.FPS,     label: 'Walk',         hint: 'WASD to Move | SPACE Jump | SHIFT Duck | CLICK to open a door, drawer or blind | ESC to Exit' },
 ];
 
 const panel     = document.querySelector('.mode-buttons');
