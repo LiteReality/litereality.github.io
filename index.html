@@ -11,17 +11,13 @@
     <meta property="og:title" content="LiteReality: Graphics-Ready 3D Scene Reconstruction from RGB-D Scans">
     <meta property="og:description" content="An automatic pipeline that converts RGB-D scans of indoor environments into graphics-ready scenes.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yourusername.github.io/literality">
-    <meta property="og:image" content="logo.png">
+    <meta property="og:url" content="https://litereality.github.io/">
+    <meta property="og:image" content="https://litereality.github.io/logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
     
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r150/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/controls/PointerLockControls.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -32,6 +28,7 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
+                <li><a href="https://litereality.github.io/Litereality-agent-site/" class="nav-new" target="_blank" rel="noopener">Agent</a></li>
                 <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#video">Video</a></li>
                 <li><a href="#examples">Examples</a></li>
@@ -50,6 +47,13 @@
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
+                <!-- Release ribbon -->
+                <a href="https://litereality.github.io/Litereality-agent-site/" class="announce" target="_blank" rel="noopener">
+                    <span class="announce-tag"><span class="announce-dot"></span>New</span>
+                    <span class="announce-text"><b>LiteReality-Agent</b> is out &mdash; plus the LiteReality iOS scanner app</span>
+                    <span class="announce-arrow"><i class="fas fa-arrow-up-right-from-square"></i></span>
+                </a>
+
                 <div class="hero-title-row">
                     <img src="logo.png" alt="LiteReality Logo" class="hero-logo">
                     <span class="hero-title-main">LiteReality</span>
@@ -60,6 +64,7 @@
                     <a href="#video" class="btn btn-secondary"><i class="fas fa-play"></i> Video</a>
                     <a href="https://github.com/LiteReality/LiteReality" class="btn btn-secondary" target="_blank" title="Code"><i class="fab fa-github"></i> Code</a>
                     <a href="#citation" class="btn btn-secondary" title="BibTeX"><i class="fas fa-book"></i> BibTeX</a>
+                    <a href="https://litereality.github.io/Litereality-agent-site/" class="btn btn-secondary" target="_blank" rel="noopener" title="LiteReality-Agent"><i class="fas fa-wand-magic-sparkles"></i> Agent</a>
                 </div>
                 <div class="authors-row">
                     <div class="authors">
@@ -93,12 +98,9 @@
                 </div>
 
                 <div class="hero-description">
-                    <p>
-
                         <p>
                             We are excited to present <b>LiteReality</b> ✨, an automatic pipeline that converts RGB-D scans of indoor environments into <b>graphics-ready</b> 🏠 scenes. In these scenes, all objects are represented as high-quality meshes with PBR materials 🎨 that match their real-world appearance. The scenes also include articulated objects 🔧 and are ready to integrate into graphics pipelines for rendering 💡 and physics-based interactions 🕹️.
                         </p>
-                    </p>
                 </div>
 
                 <div class="hero-video">
@@ -117,7 +119,6 @@
         </div>
     </section>
 
-    
     <!-- Gallery Section -->
     <section id="gallery" class="gallery">
         <div class="container">
@@ -197,7 +198,7 @@
         <div class="container">
             <h2>Pipeline of LiteReality</h2>
             <div class="pipeline-embed">
-                <img src="pipeline_main.png " alt="LiteReality Pipeline" class="pipeline-img">
+                <img src="pipeline_main.png" alt="LiteReality Pipeline" class="pipeline-img">
             </div>
             <p class="pipeline-caption">
                 With input RGB-D scans, the process begins with scene perception and parsing, where room layouts and 3D object bounding box are detected and parsed into a structured and physically plausible arrangement with the help of a scene graph. In the object reconstruction stage, identical clustering first finds identical objects, and a hierarchical retrieval approach is conducted to match 3D models retrieved from the LiteReality database. The material painting stage retrieves and optimizes PBR materials by referencing observed images. Finally, procedural reconstruction assembles all the information into a graphics-ready environment that features realism and interactivity.
@@ -222,7 +223,7 @@
                 <ul>
                   <li>🖌️📸 <strong>Left:</strong> Model painted using <em>multiple reference images</em></li>
                   <li>🎨✨ <strong>Right:</strong> Single reference image used to paint <em>three different models</em></li>
-                <br>
+                </ul>
               </div>
 
 
@@ -367,6 +368,5 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="threejs-viewer.js"></script>
 </body>
 </html> 
