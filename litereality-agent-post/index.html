@@ -21,16 +21,75 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>LiteReality-Agent — Zhening Huang</title>
+  <title>LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction</title>
   <meta name="description" content="An open-source, end-to-end toolkit for reconstructing interactable indoor 3D scenes — scan a room with the iOS app, and the agent turns it into a graphics-ready scene with articulated assets.">
+  <link rel="canonical" href="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/">
+
   <meta property="og:type" content="article">
+  <meta property="og:url" content="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/">
   <meta property="og:title" content="LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction">
   <meta property="og:description" content="An open-source, end-to-end toolkit for reconstructing interactable indoor 3D scenes — scan a room with the iOS app, and the agent turns it into a graphics-ready scene with articulated assets.">
-  <meta property="og:image" content="assets/images/og.png">
+  <meta property="og:image" content="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/assets/images/og.png">
   <meta property="article:published_time" content="2026-08-04">
   <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="stylesheet" href="assets/css/blog.css?v=5">
+  <!-- =====================================================================
+       Google Scholar (Highwire Press citation_* tags).
+
+       Scholar reads these, not the visible page, to build the record, so they
+       must agree with what a reader sees: same title as the <h1>, same author
+       order as the byline, same date as "Published". If you edit one, edit
+       both. Author names go "Family, Given", one tag each, no affiliations.
+       Dates are YYYY/MM/DD.
+
+       citation_pdf_url points at the print build (tools/build-post-pdf.sh).
+       Scholar treats the HTML page and that PDF as one work, and prefers the
+       PDF for full text — keep it regenerated whenever the prose changes.
+       ===================================================================== -->
+  <meta name="citation_title" content="LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction">
+  <meta name="citation_author" content="Huang, Zhening">
+  <meta name="citation_author" content="Li, Yueyan">
+  <meta name="citation_author" content="Chiu, Johnathan">
+  <meta name="citation_author" content="Lyu, Xiaoyang">
+  <meta name="citation_author" content="Zhou, Matt">
+  <meta name="citation_author" content="Yao, Yuxin">
+  <meta name="citation_author" content="Lasenby, Joan">
+  <meta name="citation_author" content="Wu, Shangzhe">
+  <meta name="citation_publication_date" content="2026/08/04">
+  <meta name="citation_online_date" content="2026/08/04">
+  <meta name="citation_technical_report_institution" content="University of Cambridge">
+  <meta name="citation_language" content="en">
+  <meta name="citation_abstract_html_url" content="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/">
+  <meta name="citation_fulltext_html_url" content="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/">
+  <meta name="citation_pdf_url" content="https://litereality.github.io/Litereality-agent-site/litereality-agent-post/litereality-agent.pdf">
+  <meta name="citation_keywords" content="3D scene reconstruction; indoor scenes; agentic systems; RGB-D scanning; articulated objects; simulation environments">
+
+  <!-- Schema.org for ordinary web search; Scholar ignores it, Google does not. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction",
+    "name": "LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction",
+    "datePublished": "2026-08-04",
+    "inLanguage": "en",
+    "url": "https://litereality.github.io/Litereality-agent-site/litereality-agent-post/",
+    "image": "https://litereality.github.io/Litereality-agent-site/litereality-agent-post/assets/images/og.png",
+    "abstract": "An open-source, end-to-end toolkit for reconstructing interactable indoor 3D scenes. Scan a room with the iOS app; the agent turns it into a complete, graphics-ready scene with articulated assets.",
+    "author": [
+      { "@type": "Person", "name": "Zhening Huang", "url": "https://zheninghuang.github.io/" },
+      { "@type": "Person", "name": "Yueyan Li" },
+      { "@type": "Person", "name": "Johnathan Chiu", "url": "https://johnathanchiu.github.io/" },
+      { "@type": "Person", "name": "Xiaoyang Lyu", "url": "https://shawlyu.github.io/" },
+      { "@type": "Person", "name": "Matt Zhou", "url": "https://mattzh72.github.io/" },
+      { "@type": "Person", "name": "Yuxin Yao", "url": "https://yuxinyao620.github.io/" },
+      { "@type": "Person", "name": "Joan Lasenby" },
+      { "@type": "Person", "name": "Shangzhe Wu", "url": "https://www.elliottwu.com/" }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="assets/css/blog.css?v=6">
 </head>
 
 <body>
@@ -55,33 +114,32 @@
       <dt>Published</dt>
       <dd>August 4, 2026</dd>
 
+      <!-- Spelled out rather than folded into a <details>: Google Scholar wants
+           the byline plainly visible under the title. Plain text, no homepage
+           links and no affiliations — the site index carries those. Keep the
+           order in step with the citation_author tags in <head>. Names are
+           nbsp-joined so a line breaks between names, never inside one. -->
       <dt>Authors</dt>
       <dd>
-        <details class="authors">
-          <summary>Zhening Huang and collaborators</summary>
-          <!-- Homepages match the author line on the site index; keep the two in step. -->
-          <p>
-            <a href="https://zheninghuang.github.io/">Zhening Huang</a>,
-            <a href="https://www.linkedin.com/in/yueyan-li-1b21a1251/">Yueyan Li</a>,
-            <a href="https://johnathanchiu.github.io/">Johnathan Chiu</a>,
-            <a href="https://shawlyu.github.io/">Xiaoyang Lyu</a>,
-            <a href="https://mattzh72.github.io/">Matt Zhou</a>,
-            <a href="https://yuxinyao620.github.io/">Yuxin Yao</a>,
-            <a href="https://scholar.google.com/citations?user=tZwXV7QAAAAJ&amp;hl=en">Joan Lasenby</a>,
-            <a href="https://www.elliottwu.com/">Shangzhe Wu</a>
-          </p>
-          <!-- TODO: affiliations & venue still provisional (from backup.md). -->
-        </details>
+        <p class="authors">
+          Zhening&nbsp;Huang, Yueyan&nbsp;Li, Johnathan&nbsp;Chiu,
+          Xiaoyang&nbsp;Lyu, Matt&nbsp;Zhou, Yuxin&nbsp;Yao,
+          Joan&nbsp;Lasenby, Shangzhe&nbsp;Wu
+        </p>
+        <!-- TODO: affiliations & venue still provisional (from backup.md). -->
       </dd>
 
       <!-- TODO: paper link still needed for LiteReality-Agent itself. -->
       <dt>Links</dt>
       <dd>
+        <a class="pdf-link" href="litereality-agent.pdf">PDF</a> <span class="sep">&middot;</span>
         <a href="https://litereality.github.io/Litereality-agent-site/">LiteReality-Agent</a> &middot;
         <a href="https://github.com/LiteReality/LiteReality-Agent">Code</a> &middot;
         <a href="https://apps.apple.com/ph/app/litereality/id6774158260">App</a>
       </dd>
     </dl>
+
+    <h2 id="abstract">Abstract</h2>
 
     <!-- =================================================================== -->
     <!-- [TEXT] The one-line answer to "why should I read this?"              -->
