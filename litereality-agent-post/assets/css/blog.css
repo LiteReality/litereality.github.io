@@ -172,18 +172,13 @@ sub, sup { font-size: 50%; line-height: 0; }
 .post-meta dd { margin: 0 0 0.5rem; }
 @media (min-width: 768px) { .post-meta dd { margin-bottom: 0; } }
 
-/* Collapsible author list — click "Authors" to expand the full roster. */
-.authors > summary {
-  cursor: pointer;
-  list-style: none;
-  text-decoration: underline dotted;
-  text-underline-offset: 4px;
-  text-decoration-color: var(--fg-muted);
+/* The full roster, always on show — Scholar reads the byline off the page.
+   Names only: no links, no affiliations. The site index carries those. */
+.authors {
+  margin: 0;
+  color: var(--fg-muted);
+  text-wrap: pretty;
 }
-.authors > summary::-webkit-details-marker { display: none; }
-.authors > summary::after { content: " ▾"; color: var(--fg-muted); }
-.authors[open] > summary::after { content: " ▴"; }
-.authors p { margin-top: 0.5rem; color: var(--fg-muted); }
 
 /* --- Prose ---------------------------------------------------------------- */
 
@@ -661,3 +656,138 @@ html.lb-open, html.lb-open body { overflow: hidden; }
 }
 .post-list a:hover .post-name { text-decoration: underline; text-underline-offset: 5px; }
 .post-list .post-blurb { color: var(--fg-muted); margin-top: 0.25rem; }
+
+/* --- Print / PDF ----------------------------------------------------------
+   This is what tools/build-post-pdf.sh prints, so it is the layout Google
+   Scholar parses. Scholar's PDF rules drive the sizes: the title has to be the
+   biggest text on page one at 24pt or more, the byline slightly smaller at
+   16–23pt, and everything has to be real selectable text. Ordinary
+   print-from-the-browser gets the same page.
+
+   Things the screen can do that paper cannot — playing video, switching tabs,
+   opening a lightbox — are either flattened or dropped here.
+   -------------------------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 18mm 20mm;
+}
+
+@media print {
+  /* Paper is paper: pin the light palette whatever the OS is set to. */
+  :root, :root[data-theme="dark"] {
+    --bg: #fff; --bg-sunken: #fff; --fg: #000; --fg-muted: #333;
+    --link: #000; --rule: #bbb; --card: #fff; --shadow: none;
+  }
+
+  body {
+    padding: 0;
+    font-size: 9.5pt;
+    line-height: 1.5;
+    overflow-x: visible;
+  }
+
+  /* The prose column is the page; nothing breaks out of it. */
+  .wrap, .prose, .breakout, .media.breakout {
+    max-width: 100%;
+    width: auto;
+    margin-inline: 0;
+  }
+
+  /* Screen furniture with no paper equivalent. */
+  .site-header, .site-footer, .heading-anchor, .copy-btn,
+  .video-fs, .video-loading, .tag, .lightbox, .toolbox-tabs,
+  .toolbox > input { display: none !important; }
+
+  /* --- Title block: title biggest, byline next, per Scholar's PDF rules --- */
+  .post-title {
+    font-size: 26pt;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+  }
+  .post-meta {
+    display: block;
+    font-size: 9.5pt;
+    margin-bottom: 2rem;
+  }
+  .post-meta dt {
+    font-size: 8pt;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #555;
+    margin-top: 0.6rem;
+  }
+  .post-meta dd { margin: 0.1rem 0 0; }
+  .authors {
+    font-size: 16pt;
+    line-height: 1.35;
+    color: #000;
+  }
+
+  /* Keep every URL a reader might want to type, since a printed link is
+     otherwise a dead end. */
+  .prose a { color: #000; text-decoration: underline; }
+  .prose a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 7.5pt;
+    color: #555;
+    word-break: break-all;
+  }
+
+  /* Exceptions: the bibliography already prints its URLs, a heading is no
+     place for one, and the PDF link points at this very file. (Written
+     long-hand to outrank the rule above.) */
+  .prose ol.bib a::after,
+  .prose h2 a::after,
+  .prose h3 a::after { content: none; }
+  .prose .pdf-link, .prose .pdf-link + .sep { display: none; }
+
+  /* --- Flow control: headings stay with their text, figures stay whole --- */
+  .prose h2, .prose h3 { break-after: avoid; page-break-after: avoid; }
+  .prose h2 { margin-top: 1.6rem; font-size: 12pt; }
+  .prose h3 { margin-top: 1.2rem; font-size: 10.5pt; }
+  figure.media, .callout, .stat, .cite-block, .toolbox-panel,
+  .prose ol.bib li, tr { break-inside: avoid; page-break-inside: avoid; }
+  p, li { orphans: 3; widows: 3; }
+
+  /* --- Media: a video prints as its poster frame, capped so one figure
+         never eats a whole page. --- */
+  .media { margin: 1.2rem 0 1.4rem; }
+  .video-card, .image-card {
+    border: 1px solid var(--rule);
+    box-shadow: none;
+    background: #fff;
+  }
+  .video-card video, .image-card img {
+    max-height: 92mm;
+    object-fit: contain;
+    width: 100%;
+  }
+  .media-grid { display: grid; gap: 4mm; }
+  .media-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .media-grid .video-card video, .media-grid .image-card img { max-height: 55mm; }
+  figcaption { font-size: 8pt; line-height: 1.4; color: #333; }
+
+  /* --- Tool explorer: on screen it is five tabs, on paper five sections. --- */
+  .toolbox-panel {
+    display: block !important;
+    margin-bottom: 1.2rem;
+    padding-left: 3mm;
+    border-left: 1px solid var(--rule);
+  }
+  .toolbox-panel::before {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .tb-p-select::before { content: "select_view"; }
+  .tb-p-render::before { content: "render_and_compare"; }
+  .tb-p-grid::before   { content: "grid"; }
+  .tb-p-critic::before { content: "critic"; }
+  .tb-p-mat::before    { content: "fetch_materials"; }
+  .toolbox-panel .image-card { background: #fff; }
+
+  .cite-block pre { white-space: pre-wrap; word-break: break-word; font-size: 8pt; }
+  .prose ol.bib { font-size: 8.5pt; }
+  .prose mark { background: none; box-shadow: none; font-weight: 600; }
+}
