@@ -280,6 +280,8 @@ loadRoom(useMobile ? CFG.url.replace(MOBILE_RE, 'room-mobile.glb$1') : CFG.url, 
 function onRoomLoaded(gltf){
   LS.set(0.95, 'Preparing Scene…');
   const root = gltf.scene;
+  { const _dl=[]; root.traverse(n => { if (/daylight|_sun_(ray|ring|glass)|^sunmirror/i.test(n.name||'')) _dl.push(n); });
+    _dl.forEach(n => n.parent && n.parent.remove(n)); }   // remove fake-daylight boards (all scenes)
   roomRoot = root;                      // the banana physics bounces off this, and nothing else
   scene.add(root);
   measure(root);
