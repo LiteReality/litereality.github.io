@@ -39,7 +39,7 @@ mkdir -p compressed
 # Compress the largest files with different quality settings
 # CRF 23 is a good balance (lower = better quality, higher = smaller file)
 compress_video "0617_final.mp4" "compressed/0617_final_compressed.mp4" 23
-compress_video "demo.mp4" "compressed/demo_compressed.mp4" 23
-compress_video "video_demo/example_3-1.mp4" "compressed/example_3-1_compressed.mp4" 23
+compress_video "assets/videos/demo.mp4" "compressed/demo_compressed.mp4" 23
+compress_video "assets/videos/example_3-1.mp4" "compressed/example_3-1_compressed.mp4" 23
 
 echo "Compression complete! Check the 'compressed' directory for results." 

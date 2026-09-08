@@ -238,14 +238,14 @@ lightboxModal.addEventListener('click', function(e) {
 // === Dynamic Demo Examples Thumbnails and Video Player ===
 document.addEventListener('DOMContentLoaded', function() {
     const videoFiles = [
-        { video: 'video_demo/example_1-1.mp4', thumb: 'thumbnails/example_1_thumb.jpg' },
-        { video: 'video_demo/example_2-1.mp4', thumb: 'thumbnails/example_2_thumb.jpg' },
-        { video: 'video_demo/example_3-1.mp4', thumb: 'thumbnails/example_3_thumb.jpg' },
-        { video: 'video_demo/example_4-1.mp4', thumb: 'thumbnails/example_4_thumb.jpg' },
-        { video: 'video_demo/example_5-1.mp4', thumb: 'thumbnails/example_5_thumb.jpg' },
-        { video: 'video_demo/example_6-1.mp4', thumb: 'thumbnails/example_6_thumb.jpg' },
-        { video: 'video_demo/example_7-1.mp4', thumb: 'thumbnails/example_7_thumb.jpg' },
-        { video: 'video_demo/example_8-1.mp4', thumb: 'thumbnails/example_8_thumb.jpg' },
+        { video: 'assets/videos/example_1-1.mp4', thumb: 'assets/thumbnails/example_1_thumb.jpg' },
+        { video: 'assets/videos/example_2-1.mp4', thumb: 'assets/thumbnails/example_2_thumb.jpg' },
+        { video: 'assets/videos/example_3-1.mp4', thumb: 'assets/thumbnails/example_3_thumb.jpg' },
+        { video: 'assets/videos/example_4-1.mp4', thumb: 'assets/thumbnails/example_4_thumb.jpg' },
+        { video: 'assets/videos/example_5-1.mp4', thumb: 'assets/thumbnails/example_5_thumb.jpg' },
+        { video: 'assets/videos/example_6-1.mp4', thumb: 'assets/thumbnails/example_6_thumb.jpg' },
+        { video: 'assets/videos/example_7-1.mp4', thumb: 'assets/thumbnails/example_7_thumb.jpg' },
+        { video: 'assets/videos/example_8-1.mp4', thumb: 'assets/thumbnails/example_8_thumb.jpg' },
     ];
     const thumbnailsContainer = document.getElementById('examples-thumbnails');
     const videoPlayer = document.getElementById('examples-video-player');
@@ -303,9 +303,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // === Applications Interactive Gallery ===
 const appVideos = [
-    { src: 'application_1_resized.mp4', caption: 'Relighting', thumb: 'thumbnails/application_1_thumb.jpg' },
-    { src: 'application_2.mp4', caption: 'Interactable Scene', thumb: 'thumbnails/application_2_thumb.jpg' },
-    { src: 'application_3_resized.mp4', caption: 'Physically Based Interaction', thumb: 'thumbnails/application_3_thumb.jpg' }
+    { src: 'assets/videos/application_1_resized.mp4', caption: 'Relighting', thumb: 'assets/thumbnails/application_1_thumb.jpg' },
+    { src: 'assets/videos/application_2.mp4', caption: 'Interactable Scene', thumb: 'assets/thumbnails/application_2_thumb.jpg' },
+    { src: 'assets/videos/application_3_resized.mp4', caption: 'Physically Based Interaction', thumb: 'assets/thumbnails/application_3_thumb.jpg' }
 ];
 const appThumbs = document.getElementById('applications-thumbnails');
 const appPlayer = document.getElementById('applications-video-player');

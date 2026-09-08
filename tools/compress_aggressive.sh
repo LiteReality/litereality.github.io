@@ -37,6 +37,6 @@ mkdir -p compressed_aggressive
 
 # Compress with more aggressive settings
 compress_aggressive "0617_final.mp4" "compressed_aggressive/0617_final_small.mp4"
-compress_aggressive "demo.mp4" "compressed_aggressive/demo_small.mp4"
+compress_aggressive "assets/videos/demo.mp4" "compressed_aggressive/demo_small.mp4"
 
 echo "Aggressive compression complete!" 

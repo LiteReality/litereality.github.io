@@ -3,7 +3,7 @@
 <title>LiteReality-Agent</title>
 <meta name="description" content="LiteReality-Agent: an agentic system for code-based indoor reconstruction from RGB-D scans.">
 <meta name="color-scheme" content="light">
-<link rel="icon" type="image/png" href="app-logo.png">
+<link rel="icon" type="image/png" href="assets/images/app-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -259,7 +259,7 @@
 
 <nav id="nav">
   <div class="wrap nav-in">
-    <a class="brand" href="#top"><img src="app-logo.png" alt="" aria-hidden="true"><span>LiteReality<i>-Agent</i></span></a>
+    <a class="brand" href="#top"><img src="assets/images/app-logo.png" alt="" aria-hidden="true"><span>LiteReality<i>-Agent</i></span></a>
     <span class="nav-right">
       <a class="nav-link" href="litereality-agent-post/">Blog</a>
       <a class="nav-cta" href="https://github.com/LiteReality/LiteReality-Agent/" target="_blank" rel="noopener">GitHub ↗</a>
@@ -279,7 +279,7 @@
 <header class="hero" id="top">
   <div class="wrap hero-cap">
     <div class="lockup">
-      <img src="logo.png" alt="LiteReality-Agent logo">
+      <img src="assets/images/logo.png" alt="LiteReality-Agent logo">
       <h1>LiteReality<i>-</i>Agent</h1>
     </div>
     <p class="subtitle">An Agentic System for Interactable 3D Indoor Scene Reconstruction</p>
@@ -308,7 +308,7 @@
     </div>
   </div>
   <div class="hero-video">
-    <video src="litereality-agent-post/assets/videos/overview.mp4" poster="teaser_poster.jpg" autoplay muted loop playsinline preload="auto"
+    <video src="litereality-agent-post/assets/videos/overview.mp4" poster="assets/images/teaser_poster.jpg" autoplay muted loop playsinline preload="auto"
            aria-label="Indoor scans reconstructed into interactive 3D scenes"></video>
   </div>
 </header>
@@ -329,7 +329,7 @@
     </div>
     <div class="frame reveal">
       <iframe id="frameView" data-src="vr/office-elliott-qc.html" title="Interactive walkthrough" loading="lazy" allow="fullscreen; pointer-lock"></iframe>
-      <img class="poster" id="framePoster" src="gallery/studio-office.jpg" alt="" aria-hidden="true">
+      <img class="poster" id="framePoster" src="assets/gallery/studio-office.jpg" alt="" aria-hidden="true">
       <button class="veil" id="veil"><span>Click to explore this room</span></button>
     </div>
   </div>
@@ -339,7 +339,7 @@
   <div class="wrap">
     <div class="ctacard reveal">
       <div class="appband">
-        <img class="app-logo" src="app-logo.png" alt="LiteReality app icon" width="176" height="176">
+        <img class="app-logo" src="assets/images/app-logo.png" alt="LiteReality app icon" width="176" height="176">
         <div>
           <span class="eyebrow">The scanner app</span>
           <h2>LiteReality</h2>
@@ -408,28 +408,28 @@
           <h3>Text-based editing</h3>
           <p>Retexture walls and floors from a typed request — exposed brick, walnut panelling, sage-green paint. The geometry never moves.</p>
         </div>
-        <video src="apps/text.mp4" poster="apps/text_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Retexturing walls and floors from prompts"></video>
+        <video src="assets/apps/text.mp4" poster="assets/apps/text_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Retexturing walls and floors from prompts"></video>
       </div>
       <div class="app reveal">
         <div>
           <h3>Rearrangement</h3>
           <p>Re-lay out the room from a prompt while keeping everything grounded and collision-free. Nothing is deleted.</p>
         </div>
-        <video src="apps/rearrange.mp4" poster="apps/rearrange_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Moving furniture from prompts"></video>
+        <video src="assets/apps/rearrange.mp4" poster="assets/apps/rearrange_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Moving furniture from prompts"></video>
       </div>
       <div class="app reveal">
         <div>
           <h3>Decoration</h3>
           <p>The agent fetches real assets and writes procedural geometry — pendant lamps, banners, a party setup — all placed clear of the door swing.</p>
         </div>
-        <video src="apps/decor.mp4" poster="apps/decor_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Props and procedural geometry added from prompts"></video>
+        <video src="assets/apps/decor.mp4" poster="assets/apps/decor_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Props and procedural geometry added from prompts"></video>
       </div>
       <div class="app reveal">
         <div>
           <h3>Intrinsics</h3>
           <p>A fully authored scene renders perfect intrinsics for free: pixel-exact segmentation, depth, normals and albedo, from the same cameras.</p>
         </div>
-        <video src="apps/intrinsics.mp4" poster="apps/intrinsics_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Segmentation and depth rendered from the authored scene"></video>
+        <video src="assets/apps/intrinsics.mp4" poster="assets/apps/intrinsics_poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Segmentation and depth rendered from the authored scene"></video>
       </div>
     </div>
   </div>
@@ -504,7 +504,7 @@ const SCENES = [
 ];
 grid.innerHTML = SCENES.map(([id, name, tag, key]) => `
   <a class="gcard" href="${vrUrl(id)}">
-    <img src="gallery/${key}.jpg?v=2" alt="${name} — real capture beside reconstruction" loading="lazy">
+    <img src="assets/gallery/${key}.jpg?v=2" alt="${name} — real capture beside reconstruction" loading="lazy">
     <div class="gmeta"><div><div class="n">${name}</div><div class="t">${tag}</div></div><span class="go" aria-hidden="true">↗</span></div>
   </a>`).join("");
 
@@ -529,7 +529,7 @@ tabs.onclick = e => {
   if (!b) return;
   tabs.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
   frameOpen.href = vrUrl(b.dataset.id);
-  framePoster.src = `gallery/${b.dataset.poster}.jpg`;
+  framePoster.src = `assets/gallery/${b.dataset.poster}.jpg`;
   if (!TOUCH) frameView.src = frameOpen.href;  // the VR walkthrough viewer
   veil.classList.remove("off");
 };
