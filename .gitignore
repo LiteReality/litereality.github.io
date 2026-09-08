@@ -1,0 +1,4 @@
+.DS_Store
+
+# scratch dir for agent/tools/build-post-pdf.sh
+agent/litereality-agent-post/.pdfbuild/
