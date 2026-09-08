@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Submit this at https://search.google.com/search-console as
-  https://litereality.github.io/Litereality-agent-site/sitemap.xml
+  https://litereality.github.io/agent/sitemap.xml
 
   There is no robots.txt in this repo on purpose: robots.txt is read per origin,
   from https://litereality.github.io/robots.txt, which belongs to the org's user
@@ -11,7 +11,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://litereality.github.io/Litereality-agent-site/</loc>
+    <loc>https://litereality.github.io/agent/</loc>
     <lastmod>2026-08-17</lastmod>
     <priority>1.0</priority>
   </url>
@@ -19,18 +19,18 @@
   <!-- The article. Its PDF twin is declared to Scholar by the citation_pdf_url
        tag in the post's <head>; listed here so ordinary search finds it too. -->
   <url>
-    <loc>https://litereality.github.io/Litereality-agent-site/litereality-agent-post/</loc>
+    <loc>https://litereality.github.io/agent/litereality-agent-post/</loc>
     <lastmod>2026-08-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://litereality.github.io/Litereality-agent-site/litereality-agent-post/litereality-agent.pdf</loc>
+    <loc>https://litereality.github.io/agent/litereality-agent-post/litereality-agent.pdf</loc>
     <lastmod>2026-08-17</lastmod>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://litereality.github.io/Litereality-agent-site/vr/</loc>
+    <loc>https://litereality.github.io/agent/vr/</loc>
     <lastmod>2026-08-17</lastmod>
     <priority>0.5</priority>
   </url>

@@ -18,7 +18,7 @@ JS="$(hash_of vr/app.js  | cut -c1-8)"
 CSS="$(hash_of vr/app.css | cut -c1-8)"
 
 n=0
-for f in vr/*-QC.html; do
+for f in vr/*-qc.html; do
   # Match the file with or without an existing ?v= stamp, so this is safe to re-run.
   perl -0pi -e "s{href=\"app\.css(\?v=[0-9a-f]+)?\"}{href=\"app.css?v=$CSS\"}g;
                 s{src=\"app\.js(\?v=[0-9a-f]+)?\"}{src=\"app.js?v=$JS\"}g" "$f"
@@ -26,4 +26,4 @@ for f in vr/*-QC.html; do
 done
 
 echo "stamped $n scene pages   app.js?v=$JS   app.css?v=$CSS"
-grep -h 'app\.\(js\|css\)?v=' vr/*-QC.html | sort -u | sed 's/^/   /'
+grep -h 'app\.\(js\|css\)?v=' vr/*-qc.html | sort -u | sed 's/^/   /'

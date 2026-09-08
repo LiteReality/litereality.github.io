@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Not found</title>
+<script>
+  // Old project-site URL and mixed-case filenames → new lowercase /agent/ path.
+  var p = location.pathname;
+  if (p.startsWith('/Litereality-agent-site/')) {
+    location.replace(p.replace('/Litereality-agent-site/', '/agent/').toLowerCase() + location.search + location.hash);
+  } else if (p !== p.toLowerCase()) {
+    location.replace(p.toLowerCase() + location.search + location.hash);
+  }
+</script>
+<p>Not found. <a href="/">LiteReality</a> · <a href="/agent/">LiteReality-Agent</a></p>
