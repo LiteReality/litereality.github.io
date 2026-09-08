@@ -488,7 +488,7 @@
 </footer>
 
 <script>
-const vrUrl = id => "vr/" + encodeURIComponent(id) + ".html";
+const vrUrl = id => "vr/" + encodeURIComponent(id).toLowerCase() + ".html"; // scene pages are lowercase files
 
 // gallery
 const SCENES = [
