@@ -1,0 +1,6 @@
+# Scratch dir for tools/build-post-pdf.sh — poster frames and downscaled
+# figures, all regenerated on every run. The script clears it when it finishes;
+# this catches the runs that don't.
+litereality-agent-post/.pdfbuild/
+
+.DS_Store
