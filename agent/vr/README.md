@@ -26,3 +26,22 @@ generator and re-run it into this folder; don't hand-edit the output. Scene list
 recon index; each scene page is a tiny `window.SCENE = { url, cloud }` pointer + shared includes.
 
 Deep links: `?compare=1` opens straight into the side-by-side.
+
+## Versioned refinement snapshots (20 September 2026)
+
+The nine existing pages now use the selected support-first refinement checkpoints
+from batch `local-dino-20260919-181326`. Desktop GLBs are copied byte-for-byte;
+mobile GLBs deduplicate resources, resize textures to 512 pixels and use Draco,
+while retaining every node name and animation name. Original `recon/*-QC` assets
+and scan clouds are unchanged. The shared viewer app and controls are unchanged.
+
+`reconstruction-snapshots.json` records each current URL, previous URL, hashes,
+selected round, support result and visual score. These are NOT final-approved
+scenes; kitchen support remains unresolved. To regenerate only these pointers,
+run `python agent/tools/update-vr-reconstructions.py` from the repository root.
+Run this pointer generator after the older full template generator, too, so a
+template rebuild does not revert the scene assets. It preserves page names,
+scan-cloud URLs, cameras and shared app files and is idempotent.
+
+Rollback: restore the previous page/pointer commit; the earlier R2 objects remain
+available. Do not overwrite those shared legacy assets to update this gallery.
