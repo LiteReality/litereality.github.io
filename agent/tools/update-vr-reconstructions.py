@@ -41,11 +41,10 @@ def update(vr):
         app_hash=hashlib.sha256((vr/'app.js').read_bytes()).hexdigest()[:12]
         text=re.sub(r'src="app.js\?v=[^"]+"',f'src="app.js?v={app_hash}"',text)
         page.write_text(text)
-    notice='<p class="lede" id="refinement-status">Latest reconstruction snapshot: '+manifest['snapshot_utc'][:10]+'. Support-first refinement; visual quality is not final-approved. Existing scan comparisons are retained.</p>'
-    if 'id="refinement-status"' in index:
-        index=re.sub(r'<p class="lede" id="refinement-status">.*?</p>',notice,index)
-    else:
-        index=index.replace('<div class="grid">',notice+'\n<div class="grid">')
+    index=re.sub(r'<p class="lede" id="refinement-status">.*?</p>\s*','',index)
+    index=re.sub(r'<p class="lede">.*?</p>',
+                 '<p class="lede">Example scenes created by LiteReality-Agent. Click a scene to open the interactive viewer.</p>',
+                 index,count=1,flags=re.DOTALL)
     (vr/'index.html').write_text(index)
 
 
