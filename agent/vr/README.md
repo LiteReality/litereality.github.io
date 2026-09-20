@@ -30,10 +30,12 @@ Deep links: `?compare=1` opens straight into the side-by-side.
 ## Versioned refinement snapshots (20 September 2026)
 
 The nine existing pages now use the selected support-first refinement checkpoints
-from batch `local-dino-20260919-181326`. Desktop GLBs are copied byte-for-byte;
+from batch `local-dino-20260919-181326`. Desktop GLBs are copied byte-for-byte
+except for the explicitly documented Office-Elliott hierarchy correction below;
 mobile GLBs deduplicate resources, resize textures to 512 pixels and use Draco,
 while retaining every node name and animation name. Original `recon/*-QC` assets
-and scan clouds are unchanged. The shared viewer app and controls are unchanged.
+and scan clouds are unchanged. Viewer controls are preserved; the shared app now
+also supports the explicit scene-only lighting calibration described below.
 
 `reconstruction-snapshots.json` records each current URL, previous URL, hashes,
 selected round, support result and visual score. These are NOT final-approved
@@ -45,3 +47,17 @@ scan-cloud URLs, cameras and shared app files and is idempotent.
 
 Rollback: restore the previous page/pointer commit; the earlier R2 objects remain
 available. Do not overwrite those shared legacy assets to update this gallery.
+
+### Viewer corrections
+
+- `fallside-office-Zhening`: explicit scene-only rendering configuration sets
+  exposure to 0.55 and scales imported punctual lights by 0.005. Its Blender export
+  contained ~11,957 and ~4,620 intensity point lights, washing out the browser view
+  when combined with the environment. Other scenes retain their prior lighting.
+- `Office-Elliott`: desktop and mobile GLBs now parent the 13 supported desk-object
+  groups to `desk_top_lift` (Mouse remains supported by MousePad). Their world-space
+  rest transforms, mesh buffers, node names and animation channels are unchanged.
+  The monitor, laptop, keyboard, drinks, phone, cables and accessories move with the
+  desktop through its 0.34 m lift; Table0 and floor-supported objects do not move.
+  These are versioned web export corrections; original authored/checkpoint files
+  remain untouched. Prior snapshot URLs are retained in the metadata for rollback.

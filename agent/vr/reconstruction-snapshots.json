@@ -71,7 +71,9 @@
       "page": "fallside-office-zhening-qc.html",
       "url": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/fallside-office-Zhening/room.glb",
       "cloud": "https://litereality-viewer.huangzhening.workers.dev/recon/fallside-office-Zhening-QC/points.ply",
-      "thumb": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/fallside-office-Zhening/thumb.jpg",
+      "thumb": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/vr-fixes-rTPK94/fallside-office-Zhening/thumb.jpg",
+      "prior_thumbnail": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/fallside-office-Zhening/thumb.jpg",
+      "rendering": {"exposure": 0.55, "punctualLightScale": 0.005},
       "previous_url": "https://litereality-viewer.huangzhening.workers.dev/recon/fallside-office-Zhening-QC/room.glb",
       "previous_cloud": "https://litereality-viewer.huangzhening.workers.dev/recon/fallside-office-Zhening-QC/points.ply",
       "support_pass": true,
@@ -101,7 +103,9 @@
     "office-elliott-qc.html": {
       "scene": "Office-Elliott",
       "page": "office-elliott-qc.html",
-      "url": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/Office-Elliott/room.glb",
+      "url": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/vr-fixes-rTPK94/Office-Elliott/room.glb",
+      "prior_snapshot_url": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/Office-Elliott/room.glb",
+      "model_correction": "13 supported object groups follow desk_top_lift; Mouse follows MousePad. Rest transforms, mesh buffers and animation channels preserved.",
       "cloud": "https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/points.ply",
       "thumb": "https://litereality-viewer.huangzhening.workers.dev/interactive/local-dino-20260919-181326/vr/github-vr-update-CX6yIF/Office-Elliott/thumb.jpg",
       "previous_url": "https://litereality-viewer.huangzhening.workers.dev/recon/Office-Elliott-QC/room.glb",
@@ -110,8 +114,8 @@
       "visual_score": 6.4,
       "accepted": false,
       "round": 2,
-      "sha256": "5fea0df0f94197ef8a2e908725f855e60e48a8274089e3ed57a37ecb8cf8ce6f",
-      "mobile_sha256": "d00e90dccff1cd1453d9cfa75d994394800629e23e04a5aa4413da1bbf58977b",
+      "sha256": "202dadb6ee11dea9dd897fa7022431da3d726527c2402af0164cbb2097fb3d5e",
+      "mobile_sha256": "3f996925442290f0a902cd43a8e38e13397bd040ce26068b1b371c2ce3e9625c",
       "status": "Latest refinement \u00b7 support passed \u00b7 not final-approved"
     },
     "psi_2_meeting-zhening-qc.html": {

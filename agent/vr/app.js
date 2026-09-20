@@ -53,10 +53,10 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(devicePixelRatio, PIXEL_CAP));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-/* Scenes are lit entirely by the environment map plus the emissive `daylight` panels baked into the
-   room, so exposure is the one dial that dims every scene evenly. Held a little under 1 — the rooms
-   read blown out at 1.0, and the highlights on white walls and laminate keep more shape down here. */
-renderer.toneMappingExposure = 0.85;
+/* The environment lights every scene; some exports also contain punctual lights.
+   Keep the established exposure unless a scene explicitly requests calibration. */
+renderer.toneMappingExposure = Number.isFinite(CFG.rendering?.exposure)
+  ? CFG.rendering.exposure : 0.85;
 renderer.setClearColor('#bcd2d3');
 
 const pmrem = new THREE.PMREMGenerator(renderer);
@@ -280,6 +280,12 @@ loadRoom(useMobile ? CFG.url.replace(MOBILE_RE, 'room-mobile.glb$1') : CFG.url, 
 function onRoomLoaded(gltf){
   LS.set(0.95, 'Preparing Scene…');
   const root = gltf.scene;
+  // Blender-exported punctual lights can overpower the browser environment.
+  // Calibration is explicit per scene; all other rooms keep their original lighting.
+  const lightScale = CFG.rendering?.punctualLightScale;
+  if (Number.isFinite(lightScale) && lightScale >= 0) {
+    root.traverse(node => { if (node.isLight) node.intensity *= lightScale; });
+  }
   roomRoot = root;                      // the banana physics bounces off this, and nothing else
   scene.add(root);
   measure(root);
