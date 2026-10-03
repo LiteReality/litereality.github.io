@@ -33,19 +33,8 @@
   <meta property="article:published_time" content="2026-08-04">
   <meta name="twitter:card" content="summary_large_image">
 
-  <!-- =====================================================================
-       Google Scholar (Highwire Press citation_* tags).
-
-       Scholar reads these, not the visible page, to build the record, so they
-       must agree with what a reader sees: same title as the <h1>, same author
-       order as the byline, same date as "Published". If you edit one, edit
-       both. Author names go "Family, Given", one tag each, no affiliations.
-       Dates are YYYY/MM/DD.
-
-       citation_pdf_url points at the print build (tools/build-post-pdf.sh).
-       Scholar treats the HTML page and that PDF as one work, and prefers the
-       PDF for full text — keep it regenerated whenever the prose changes.
-       ===================================================================== -->
+  <!-- Google Scholar metadata describes the arXiv paper. The blog's original
+       publication date is retained in the visible byline and BlogPosting data. -->
   <meta name="citation_title" content="LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction">
   <meta name="citation_author" content="Huang, Zhening">
   <meta name="citation_author" content="Li, Yueyan">
@@ -55,20 +44,26 @@
   <meta name="citation_author" content="Yao, Yuxin">
   <meta name="citation_author" content="Lasenby, Joan">
   <meta name="citation_author" content="Wu, Shangzhe">
-  <meta name="citation_publication_date" content="2026/08/04">
-  <meta name="citation_online_date" content="2026/08/04">
-  <meta name="citation_technical_report_institution" content="University of Cambridge">
+  <meta name="citation_publication_date" content="2026/10/01">
+  <meta name="citation_online_date" content="2026/10/01">
+  <meta name="citation_arxiv_id" content="2610.01863">
   <meta name="citation_language" content="en">
-  <meta name="citation_abstract_html_url" content="https://litereality.github.io/agent/litereality-agent-post/">
-  <meta name="citation_fulltext_html_url" content="https://litereality.github.io/agent/litereality-agent-post/">
-  <meta name="citation_pdf_url" content="https://litereality.github.io/agent/litereality-agent-post/litereality-agent.pdf">
+  <meta name="citation_abstract_html_url" content="https://arxiv.org/abs/2610.01863">
+  <meta name="citation_fulltext_html_url" content="https://arxiv.org/html/2610.01863v1">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2610.01863">
   <meta name="citation_keywords" content="3D scene reconstruction; indoor scenes; agentic systems; RGB-D scanning; articulated objects; simulation environments">
 
   <!-- Schema.org for ordinary web search; Scholar ignores it, Google does not. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
+    "@type": "BlogPosting",
+    "citation": {
+      "@type": "ScholarlyArticle",
+      "name": "LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction",
+      "url": "https://arxiv.org/abs/2610.01863",
+      "datePublished": "2026-10-01"
+    },
     "headline": "LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction",
     "name": "LiteReality-Agent: An Agentic System for Interactable 3D Indoor Scene Reconstruction",
     "datePublished": "2026-08-04",
@@ -129,10 +124,10 @@
         <!-- TODO: affiliations & venue still provisional (from backup.md). -->
       </dd>
 
-      <!-- TODO: paper link still needed for LiteReality-Agent itself. -->
       <dt>Links</dt>
       <dd>
-        <a class="pdf-link" href="litereality-agent.pdf">PDF</a> <span class="sep">&middot;</span>
+        <a href="https://arxiv.org/abs/2610.01863">Paper (arXiv)</a> <span class="sep">&middot;</span>
+        <a class="pdf-link" href="https://arxiv.org/pdf/2610.01863">PDF</a> <span class="sep">&middot;</span>
         <a href="../">LiteReality-Agent</a> &middot;
         <a href="https://github.com/LiteReality/LiteReality-Agent">Code</a> &middot;
         <a href="https://apps.apple.com/ph/app/litereality/id6774158260">App</a>
@@ -902,15 +897,20 @@
     </ol>
 
     <h2>Citation</h2>
+    <p>The <a href="https://arxiv.org/abs/2610.01863">paper is now available on arXiv</a> (October 1, 2026). <a href="../citation.bib" download>Download BibTeX</a>.</p>
 
     <div class="cite-block">
-<pre>@article{huang2026litereality-agent,
-  title   = {{LiteReality-Agent}: An Agentic System for
-             Interactable 3D Indoor Scene Reconstruction},
-  author  = {Huang, Zhening and Li, Yueyan and Chiu, Johnathan and
-             Lyu, Xiaoyang and Zhou, Matt and Yao, Yuxin and
-             Lasenby, Joan and Wu, Shangzhe},
-  year    = {2026}
+<pre>@misc{huang2026literealityagentagenticinteractable3d,
+  title         = {LiteReality-Agent: An Agentic System for
+                   Interactable 3D Indoor Scene Reconstruction},
+  author        = {Zhening Huang and Yueyan Li and Johnathan Chiu and
+                   Xiaoyang Lyu and Matt Zhou and Yuxin Yao and
+                   Joan Lasenby and Shangzhe Wu},
+  year          = {2026},
+  eprint        = {2610.01863},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2610.01863}
 }</pre>
     </div>
 
